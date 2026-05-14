@@ -1,6 +1,8 @@
-package com.andre.pedidosservice.users.adapters.out;
+package com.andre.pedidosservice.users.ports.out;
 
-import com.andre.pedidosservice.users.core.domain.UserDomain;
+import com.andre.pedidosservice.users.dtos.UserLoginDTO;
+import com.andre.pedidosservice.users.dtos.UserRequestDTO;
+import com.andre.pedidosservice.users.dtos.UserResponseDTO;
 import com.andre.pedidosservice.users.gateways.out.IUserServiceGateway;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> saveUser (@Valid @RequestBody UserRequestDTO dto){
-        return ResponseEntity.ok(serviceGateway.saveUser(dto))
+        return ResponseEntity.ok(serviceGateway.saveUser(dto));
     }
 
     @GetMapping

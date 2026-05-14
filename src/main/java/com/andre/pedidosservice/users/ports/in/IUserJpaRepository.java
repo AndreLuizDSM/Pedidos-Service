@@ -1,4 +1,4 @@
-package com.andre.pedidosservice.users.adapters.in;
+package com.andre.pedidosservice.users.ports.in;
 
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import jakarta.transaction.Transactional;
