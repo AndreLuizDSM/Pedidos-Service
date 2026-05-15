@@ -6,32 +6,31 @@ import com.andre.pedidosservice.users.entities.StatusEnum;
 
 public class UserDomain {
 
-    private String nome;
+    private String name;
     private String email;
-    private String senha;
+    private String password;
     private String id;
     private StatusEnum status;
-    private OrderDomain orders;
 
-    public UserDomain(String nome, String email, String senha, String id, StatusEnum status, OrderDomain orders) {
-        this.nome = nome;
+
+    public UserDomain(String name, String email, String password, String id, StatusEnum status) {
+        this.name = name;
         this.email = email;
-        this.senha = senha;
+        this.password = password;
         this.id = id;
         this.status = status;
-        this.orders = orders;
     }
 
 
     public UserDomain() {
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -42,12 +41,12 @@ public class UserDomain {
         this.email = email;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getId() {
@@ -66,11 +65,4 @@ public class UserDomain {
         this.status = status;
     }
 
-    public OrderDomain getOrders() {
-        return orders;
-    }
-
-    public void setOrders(OrderDomain orders) {
-        this.orders = orders;
-    }
 }

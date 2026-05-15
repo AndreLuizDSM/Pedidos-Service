@@ -7,7 +7,6 @@ import com.andre.pedidosservice.users.entities.UserEntity;
 import com.andre.pedidosservice.users.gateways.in.IUserRepository;
 import com.andre.pedidosservice.users.ports.in.IUserJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +21,7 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     private final IUserJpaRepository jpaRepository;
     private final UserMapper mapper;
-
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
 
     @Override
@@ -33,7 +31,7 @@ public class UserRepositoryAdapter implements IUserRepository {
         verifyEmail(entity.getEmail());
         entity.setStatus(StatusEnum.CLIENTE);
 
-        String encoded = passwordEncoder.encode(domain.getSenha());
+        String encoded = passwordEncoder.encode(domain.getPassword());
         entity.setPassword(encoded);
         jpaRepository.save(entity);
 

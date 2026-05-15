@@ -11,10 +11,7 @@ import java.util.Optional;
 @Repository
 public interface IUserJpaRepository extends JpaRepository<UserEntity, String> {
 
-
     boolean existsByEmail (String email);
-
-    Optional<UserEntity> findById (String id);
 
     @Transactional
     void deleteById (String id);
