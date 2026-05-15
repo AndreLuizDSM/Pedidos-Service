@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir C:\\\\Users\\\\INFOMAIS INFORMATICA\\\\Desktop\\\\Meu-Projeto\\\\pedidosservice *)",
+      "Bash(dir *)"
+    ]
+  }
+}

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    public final IUserServiceGateway serviceGateway;
-    public final UserMapper mapper;
+    private final IUserServiceGateway serviceGateway;
+    private final UserMapper mapper;
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody UserLoginDTO dto) {
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> patchUserStatus(@RequestParam("id") String id,
+    public ResponseEntity<UserResponseDTO> patchUserStatus(@PathVariable("id") String id,
                                                            @RequestParam("status") StatusEnum status) {
         return ResponseEntity.ok(mapper.domainToResponse(serviceGateway.patchStatus(id, status)));
     }
