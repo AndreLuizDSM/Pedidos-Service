@@ -14,8 +14,6 @@ public interface IUserJpaRepository extends JpaRepository<UserEntity, String> {
 
     boolean existsByEmail (String email);
 
-    String loginUser(UserDomain domain);
-
     Optional<UserEntity> findById (String id);
 
     @Transactional
