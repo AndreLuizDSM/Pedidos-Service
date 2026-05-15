@@ -4,7 +4,7 @@ import com.andre.pedidosservice.users.dtos.UserLoginDTO;
 import com.andre.pedidosservice.users.dtos.UserMapper;
 import com.andre.pedidosservice.users.dtos.UserRequestDTO;
 import com.andre.pedidosservice.users.dtos.UserResponseDTO;
-import com.andre.pedidosservice.users.entities.StatusEnum;
+import com.andre.pedidosservice.users.core.StatusEnum;
 import com.andre.pedidosservice.users.gateways.out.IUserServiceGateway;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

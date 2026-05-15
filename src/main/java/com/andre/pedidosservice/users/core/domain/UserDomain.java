@@ -1,8 +1,7 @@
 package com.andre.pedidosservice.users.core.domain;
 
 
-import com.andre.pedidosservice.orders.core.domain.OrderDomain;
-import com.andre.pedidosservice.users.entities.StatusEnum;
+import com.andre.pedidosservice.users.core.StatusEnum;
 
 public class UserDomain {
 
