@@ -6,7 +6,7 @@ public record UserResponseDTO (
         String id,
         String name,
         String email,
-        StatusEnum statusEnum
+        StatusEnum status
 ){
 
 }

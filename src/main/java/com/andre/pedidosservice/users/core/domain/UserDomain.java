@@ -2,6 +2,7 @@ package com.andre.pedidosservice.users.core.domain;
 
 
 import com.andre.pedidosservice.orders.core.domain.OrderDomain;
+import com.andre.pedidosservice.users.entities.StatusEnum;
 
 public class UserDomain {
 
@@ -9,10 +10,10 @@ public class UserDomain {
     private String email;
     private String senha;
     private String id;
-    private String status;
+    private StatusEnum status;
     private OrderDomain orders;
 
-    public UserDomain(String nome, String email, String senha, String id, String status, OrderDomain orders) {
+    public UserDomain(String nome, String email, String senha, String id, StatusEnum status, OrderDomain orders) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
@@ -57,11 +58,11 @@ public class UserDomain {
         this.id = id;
     }
 
-    public String getStatus() {
+    public StatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusEnum status) {
         this.status = status;
     }
 

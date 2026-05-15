@@ -1,4 +1,4 @@
-package com.andre.pedidosservice.users.adapters;
+package com.andre.pedidosservice.users.adapters.out;
 
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.dtos.UserMapper;
@@ -6,20 +6,24 @@ import com.andre.pedidosservice.users.entities.StatusEnum;
 import com.andre.pedidosservice.users.entities.UserEntity;
 import com.andre.pedidosservice.users.gateways.in.IUserRepository;
 import com.andre.pedidosservice.users.ports.in.IUserJpaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 import static org.springframework.util.Assert.notNull;
 
+@RequiredArgsConstructor
 @Service
 public class UserRepositoryAdapter implements IUserRepository {
 
-    @Autowired
-    private IUserJpaRepository jpaRepository;
-    @Autowired
-    private UserMapper mapper;
+
+    private final IUserJpaRepository jpaRepository;
+    private final UserMapper mapper;
+
+    private BCryptPasswordEncoder passwordEncoder;
 
 
     @Override
@@ -28,12 +32,14 @@ public class UserRepositoryAdapter implements IUserRepository {
         UserEntity entity = mapper.domainToEntity(domain);
         verifyEmail(entity.getEmail());
         entity.setStatus(StatusEnum.CLIENTE);
+
+        String encoded = passwordEncoder.encode(domain.getSenha());
+        entity.setPassword(encoded);
         jpaRepository.save(entity);
 
         return mapper.entityToDomain(entity);
     }
 
-    @Override
     public boolean verifyEmail(String email) {
         if (!email.contains("@") || !email.contains(".")) {
             throw new IllegalArgumentException("Credenciais inválidas");
@@ -59,8 +65,20 @@ public class UserRepositoryAdapter implements IUserRepository {
     }
 
     @Override
-    public void deleteUser(UserDomain domain) {
-        UserEntity entity = mapper.domainToEntity(domain);
-        jpaRepository.deleteById(entity.getId());
+    public void deleteUser(String id) {
+
+        jpaRepository.deleteById(id);
     }
+
+    @Override
+    public UserDomain patchUserStatus(String id, StatusEnum status) {
+        UserEntity entity = jpaRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Usuário não existe")
+        );
+        entity.setStatus(status);
+
+        return mapper.entityToDomain(jpaRepository.save(entity));
+    }
+
+
 }
