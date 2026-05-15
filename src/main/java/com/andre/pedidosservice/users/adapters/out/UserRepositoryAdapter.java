@@ -2,7 +2,7 @@ package com.andre.pedidosservice.users.adapters.out;
 
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.dtos.UserMapper;
-import com.andre.pedidosservice.users.entities.StatusEnum;
+import com.andre.pedidosservice.users.core.StatusEnum;
 import com.andre.pedidosservice.users.entities.UserEntity;
 import com.andre.pedidosservice.users.gateways.in.IUserRepository;
 import com.andre.pedidosservice.users.ports.in.IUserJpaRepository;

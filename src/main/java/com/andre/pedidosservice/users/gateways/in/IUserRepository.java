@@ -1,7 +1,7 @@
 package com.andre.pedidosservice.users.gateways.in;
 
 import com.andre.pedidosservice.users.core.domain.UserDomain;
-import com.andre.pedidosservice.users.entities.StatusEnum;
+import com.andre.pedidosservice.users.core.StatusEnum;
 
 import java.util.Optional;
 

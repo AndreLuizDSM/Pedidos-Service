@@ -1,4 +1,4 @@
-package com.andre.pedidosservice.users.entities;
+package com.andre.pedidosservice.users.core;
 
 public enum StatusEnum {
     CLIENTE, ADMIN

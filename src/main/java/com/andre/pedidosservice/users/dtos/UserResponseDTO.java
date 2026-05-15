@@ -1,6 +1,6 @@
 package com.andre.pedidosservice.users.dtos;
 
-import com.andre.pedidosservice.users.entities.StatusEnum;
+import com.andre.pedidosservice.users.core.StatusEnum;
 
 public record UserResponseDTO (
         String id,

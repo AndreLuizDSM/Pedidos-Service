@@ -1,5 +1,6 @@
 package com.andre.pedidosservice.users.entities;
 
+import com.andre.pedidosservice.users.core.StatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,6 +43,4 @@ public class UserEntity implements UserDetails {
     public String getUsername() { return email;
     }
 
-    public String getUserId(){ return id ;
-    }
 }
