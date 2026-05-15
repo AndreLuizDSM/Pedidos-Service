@@ -8,7 +8,7 @@ public interface IUserRepository {
 
     UserDomain saveUser (UserDomain domain);
 
-    Boolean verifyEmail (String email);
+    boolean verifyEmail (String email);
 
     String loginUser(UserDomain domain);
 
