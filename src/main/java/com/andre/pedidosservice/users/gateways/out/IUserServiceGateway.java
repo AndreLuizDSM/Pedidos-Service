@@ -1,7 +1,7 @@
 package com.andre.pedidosservice.users.gateways.out;
 
 import com.andre.pedidosservice.users.core.domain.UserDomain;
-import com.andre.pedidosservice.users.core.StatusEnum;
+import com.andre.pedidosservice.users.core.UserStatus;
 
 public interface IUserServiceGateway {
 
@@ -13,5 +13,5 @@ public interface IUserServiceGateway {
 
     void deleteUser (String id);
 
-    UserDomain patchStatus (String id, StatusEnum status);
+    UserDomain patchStatus (String id, UserStatus status);
 }

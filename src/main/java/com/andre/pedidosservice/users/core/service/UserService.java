@@ -1,7 +1,8 @@
 package com.andre.pedidosservice.users.core.service;
 
+import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
-import com.andre.pedidosservice.users.core.StatusEnum;
+import com.andre.pedidosservice.users.core.UserStatus;
 import com.andre.pedidosservice.users.gateways.in.IUserRepository;
 import com.andre.pedidosservice.users.gateways.out.IUserServiceGateway;
 
@@ -28,7 +29,7 @@ public class UserService implements IUserServiceGateway {
     @Override
     public UserDomain getUserById(String id) {
         return repository.findUserById(id).orElseThrow(
-                () -> new IllegalArgumentException("Usuário não encontrado" + id));
+                () -> new ResourceNotFoundException("Usuário não encontrado" + id));
     }
 
 
@@ -39,7 +40,7 @@ public class UserService implements IUserServiceGateway {
     }
 
     @Override
-    public UserDomain patchStatus(String id, StatusEnum status) {
+    public UserDomain patchStatus(String id, UserStatus status) {
 
         return repository.patchUserStatus(id , status);
     }

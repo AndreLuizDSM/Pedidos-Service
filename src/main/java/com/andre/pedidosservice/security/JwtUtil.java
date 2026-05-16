@@ -1,32 +1,34 @@
 package com.andre.pedidosservice.security;
 
+import com.andre.pedidosservice.users.core.UserStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 
+
+// Gera , valida e extrai todos os dados do Token.
 @Service
 public class JwtUtil {
 
     // Chave secreta usada para assinar e verificar tokens JWT
-    // Pegando key no application properties
-    @Value("${secretkey}")
-    private String secretKey;
+
+    private final static String SECRETKEY = "assinatura-longa-para-chave-teste-do-codigo";
 
     public SecretKey getSecretKey(){
-        byte[] key = Base64.getDecoder().decode(secretKey);
+        byte[] key = Base64.getDecoder().decode(SECRETKEY);
         return Keys.hmacShaKeyFor(key);
     }
 
     // Gera um token JWT com o email do usuário e validade de 1 hora
-    public String generateToken(String usernameEmail) {
+    public String generateToken(String userUUID, UserStatus status) {
         return Jwts.builder()
-                .subject(usernameEmail) // Define o email de usuário como o assunto do token
+                .subject(userUUID) // Define o email de usuário como o assunto do token
+                .claim("status" , status.name())
                 .issuedAt(new Date()) // Define a data e hora de emissão do token
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Define a data e hora de expiração
                 // (1 hora a partir da emissão)
@@ -45,10 +47,16 @@ public class JwtUtil {
                 .getPayload(); // Retorna o corpo das claims
     }
 
-    // Extrai o nome de usuário do token JWT
-    public String extrairEmailToken(String token) {
+    // Extrai o UUID de usuário do token JWT
+    public String extrairSubjectUUIDToken(String token) {
         // Obtém o assunto (nome de usuário) das claims do token
         return extractClaims(token).getSubject();
+    }
+
+    // Extrai o STATUS do usuário do token JWT
+    public String extrairSTATUSToken(String token) {
+        // Obtém o assunto (nome de usuário) das claims do token
+        return extractClaims(token).get("status", String.class);
     }
 
     // Verifica se o token JWT está expirado
@@ -58,10 +66,10 @@ public class JwtUtil {
     }
 
     // Valida o token JWT verificando o nome de usuário e se o token não está expirado
-    public boolean validateToken(String token, String username) {
+    public boolean validateToken(String token, String userID) {
         // Extrai o nome de usuário do token
-        final String extractedUsername = extrairEmailToken(token);
+        final String extractedUsername = extrairSubjectUUIDToken(token);
         // Verifica se o nome de usuário do token corresponde ao fornecido e se o token não está expirado
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+        return (extractedUsername.equals(userID) && !isTokenExpired(token));
     }
 }
