@@ -1,6 +1,5 @@
 package com.andre.pedidosservice.security;
 
-import com.andre.pedidosservice.exception.exceptions.UnauthorizedException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,7 +32,7 @@ public class SecurityConfig {
 
     // Configuração do filtro de segurança
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws UnauthorizedException {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Cria uma instância do JwtRequestFilter com JwtUtil e UserDetailsService
         JwtRequestFilter jwtRequestFilter = new JwtRequestFilter(jwtUtil, userDetailsService);
 
@@ -46,7 +45,7 @@ public class SecurityConfig {
                         // endpoint de login sem autenticação
                         .requestMatchers(HttpMethod.POST, "/user").permitAll() // Permite acesso ao endpoint
                         // POST usuario sem autenticação
-                        .requestMatchers(HttpMethod.DELETE, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/user").hasAuthority("ADMIN")
                         .requestMatchers("/user/**").authenticated() // Requer autenticação para qualquer endpoint
                         // que comece com /user/
                         .anyRequest().authenticated() // Requer autenticação para todas as outras requisições
@@ -64,7 +63,7 @@ public class SecurityConfig {
 
     // Configura o AuthenticationManager usando AuthenticationConfiguration
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws UnauthorizedException {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         // Obtém e retorna o AuthenticationManager da configuração de autenticação
         return authenticationConfiguration.getAuthenticationManager();
     }

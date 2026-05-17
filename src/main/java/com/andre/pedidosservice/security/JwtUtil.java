@@ -17,7 +17,7 @@ public class JwtUtil {
 
     // Chave secreta usada para assinar e verificar tokens JWT
 
-    private final static String SECRETKEY = "assinatura-longa-para-chave-teste-do-codigo";
+    private final static String SECRETKEY = "YXNzaW5hdHVyYS1sb25nYS1wYXJhLWNoYXZlLXRlc3RlLWRvLWNvZGlnbw==";
 
     public SecretKey getSecretKey(){
         byte[] key = Base64.getDecoder().decode(SECRETKEY);
@@ -32,9 +32,8 @@ public class JwtUtil {
                 .issuedAt(new Date()) // Define a data e hora de emissão do token
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Define a data e hora de expiração
                 // (1 hora a partir da emissão)
-                .signWith(getSecretKey()) //
-                // Converte a chave secreta em bytes e assina o token com ela
-                .compact(); // Constrói o token JWT
+                .signWith(getSecretKey()) // Assina o token com a secretkey
+                .compact();
     }
 
     // Extrai as claims do token JWT (informações adicionais do token)
@@ -61,6 +60,7 @@ public class JwtUtil {
 
     // Verifica se o token JWT está expirado
     public boolean isTokenExpired(String token) {
+
         // Compara a data de expiração do token com a data atual
         return extractClaims(token).getExpiration().before(new Date());
     }
