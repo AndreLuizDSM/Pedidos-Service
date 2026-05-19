@@ -1,7 +1,7 @@
 package com.andre.pedidosservice.users.core.domain;
 
 
-import com.andre.pedidosservice.users.core.StatusEnum;
+import com.andre.pedidosservice.users.core.UserStatus;
 
 public class UserDomain {
 
@@ -9,10 +9,10 @@ public class UserDomain {
     private String email;
     private String password;
     private String id;
-    private StatusEnum status;
+    private UserStatus status;
 
 
-    public UserDomain(String name, String email, String password, String id, StatusEnum status) {
+    public UserDomain(String name, String email, String password, String id, UserStatus status) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -56,11 +56,11 @@ public class UserDomain {
         this.id = id;
     }
 
-    public StatusEnum getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(StatusEnum status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
     }
 

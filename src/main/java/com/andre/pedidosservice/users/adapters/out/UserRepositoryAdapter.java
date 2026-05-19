@@ -1,8 +1,10 @@
 package com.andre.pedidosservice.users.adapters.out;
 
+import com.andre.pedidosservice.exception.exceptions.InvalidRequestException;
+import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.dtos.UserMapper;
-import com.andre.pedidosservice.users.core.StatusEnum;
+import com.andre.pedidosservice.users.core.UserStatus;
 import com.andre.pedidosservice.users.entities.UserEntity;
 import com.andre.pedidosservice.users.gateways.in.IUserRepository;
 import com.andre.pedidosservice.users.ports.in.IUserJpaRepository;
@@ -29,7 +31,7 @@ public class UserRepositoryAdapter implements IUserRepository {
 
         UserEntity entity = mapper.domainToEntity(domain);
         verifyEmail(entity.getEmail());
-        entity.setStatus(StatusEnum.CLIENTE);
+        entity.setStatus(UserStatus.CLIENT);
 
         String encoded = passwordEncoder.encode(domain.getPassword());
         entity.setPassword(encoded);
@@ -40,11 +42,11 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     public boolean verifyEmail(String email) {
         if (!email.contains("@") || !email.contains(".")) {
-            throw new IllegalArgumentException("Credenciais inválidas");
+            throw new InvalidRequestException("Credenciais inválidas");
         }
 
         if (jpaRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email já existe");
+            throw new InvalidRequestException("Email já existe");
         }
 
         return true;
@@ -69,9 +71,9 @@ public class UserRepositoryAdapter implements IUserRepository {
     }
 
     @Override
-    public UserDomain patchUserStatus(String id, StatusEnum status) {
+    public UserDomain patchUserStatus(String id, UserStatus status) {
         UserEntity entity = jpaRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Usuário não existe")
+                () -> new ResourceNotFoundException("Usuário não existe")
         );
         entity.setStatus(status);
 
