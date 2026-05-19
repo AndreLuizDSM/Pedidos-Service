@@ -13,6 +13,8 @@ public interface IUserJpaRepository extends JpaRepository<UserEntity, String> {
 
     boolean existsByEmail (String email);
 
+    Optional<UserEntity> findByEmail (String email);
+
     @Transactional
     void deleteById (String id);
 }

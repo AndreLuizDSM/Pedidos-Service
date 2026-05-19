@@ -17,7 +17,7 @@ public class UserService implements IUserServiceGateway {
     @Override
     public String login(UserDomain domain) {
 
-        return "";
+        return repository.loginUser(domain);
     }
 
     @Override
