@@ -1,0 +1,34 @@
+package com.andre.pedidosservice.security;
+
+import com.andre.pedidosservice.users.entities.UserEntity;
+import com.andre.pedidosservice.users.ports.in.IUserJpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+
+//Acessar os dados do usuário para pegar seus detalhes para fazer o request das requisições
+@Service
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+    // Repositório para acessar dados de usuário no banco de dados
+    @Autowired
+    private IUserJpaRepository usuarioRepository;
+
+    // Implementação do método para carregar detalhes do usuário pelo UUID ID
+    @Override
+    public UserDetails loadUserByUsername(String ID) throws UsernameNotFoundException {
+        // Busca o usuário no banco de dados pelo e-mail
+        UserEntity usuario = usuarioRepository.findById(ID)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + ID));
+
+        // Cria e retorna um objeto UserDetails com base no usuário encontrado
+        return org.springframework.security.core.userdetails.User
+                .withUsername(usuario.getId()) // Define o nome de usuário como o seu UUID ID
+                .password(usuario.getPassword())// Define a senha do usuário
+                .authorities(usuario.getStatus().name())// Define as suas autoridades
+                .build(); // Constrói o objeto UserDetails
+    }
+}

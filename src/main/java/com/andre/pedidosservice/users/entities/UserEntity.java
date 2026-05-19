@@ -1,6 +1,6 @@
 package com.andre.pedidosservice.users.entities;
 
-import com.andre.pedidosservice.users.core.StatusEnum;
+import com.andre.pedidosservice.users.core.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,7 +31,7 @@ public class UserEntity implements UserDetails {
     private String password;
 
     @Column(name = "status")
-    private StatusEnum status;
+    private UserStatus status;
 
 
     @Override

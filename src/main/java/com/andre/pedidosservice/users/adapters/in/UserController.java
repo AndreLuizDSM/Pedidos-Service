@@ -4,7 +4,7 @@ import com.andre.pedidosservice.users.dtos.UserLoginDTO;
 import com.andre.pedidosservice.users.dtos.UserMapper;
 import com.andre.pedidosservice.users.dtos.UserRequestDTO;
 import com.andre.pedidosservice.users.dtos.UserResponseDTO;
-import com.andre.pedidosservice.users.core.StatusEnum;
+import com.andre.pedidosservice.users.core.UserStatus;
 import com.andre.pedidosservice.users.gateways.out.IUserServiceGateway;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponseDTO> patchUserStatus(@PathVariable("id") String id,
-                                                           @RequestParam("status") StatusEnum status) {
+                                                           @RequestParam("status") UserStatus status) {
         return ResponseEntity.ok(mapper.domainToResponse(serviceGateway.patchStatus(id, status)));
     }
 
