@@ -1,7 +1,7 @@
 package com.andre.pedidosservice.security;
 
 import com.andre.pedidosservice.users.entities.UserEntity;
-import com.andre.pedidosservice.users.ports.in.IUserJpaRepository;
+import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

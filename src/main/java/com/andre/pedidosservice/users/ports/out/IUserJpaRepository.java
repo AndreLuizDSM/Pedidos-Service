@@ -1,6 +1,5 @@
-package com.andre.pedidosservice.users.ports.in;
+package com.andre.pedidosservice.users.ports.out;
 
-import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.entities.UserEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

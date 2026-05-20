@@ -2,11 +2,10 @@ package com.andre.pedidosservice.users.adapters.out;
 
 import com.andre.pedidosservice.exception.exceptions.UnauthorizedException;
 import com.andre.pedidosservice.security.JwtUtil;
-import com.andre.pedidosservice.users.core.UserStatus;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.entities.UserEntity;
-import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationIn;
-import com.andre.pedidosservice.users.ports.in.IUserJpaRepository;
+import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationOut;
+import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,7 +20,7 @@ import static org.springframework.util.Assert.notNull;
 
 @RequiredArgsConstructor
 @Service
-public class UserAuthenticationAdapter implements IUserAuthenticationIn {
+public class UserAuthenticationAdapter implements IUserAuthenticationOut {
 
     private final IUserJpaRepository jpaRepository;
     private final JwtUtil jwtUtil;
