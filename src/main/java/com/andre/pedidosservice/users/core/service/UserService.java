@@ -15,12 +15,6 @@ public class UserService implements IUserServiceGateway {
     }
 
     @Override
-    public String login(UserDomain domain) {
-
-        return "";
-    }
-
-    @Override
     public UserDomain saveUser(UserDomain domain) {
 
         return repository.saveUser(domain);
@@ -31,7 +25,6 @@ public class UserService implements IUserServiceGateway {
         return repository.findUserById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Usuário não encontrado" + id));
     }
-
 
     @Override
     public void deleteUser(String id) {

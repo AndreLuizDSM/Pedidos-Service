@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.SignatureException;
 import java.time.LocalDateTime;
 
 // Intercepta cada request feito lendo o token passado pelo HEADER e faz a autenticação
@@ -71,7 +73,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         // Continua a cadeia de filtros, permitindo que a requisição prossiga
         chain.doFilter(request, response);
-    }  catch(ExpiredJwtException e) {
+    }  catch(ExpiredJwtException | MalformedJwtException e) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.getWriter().write(buildError("Token inválido",

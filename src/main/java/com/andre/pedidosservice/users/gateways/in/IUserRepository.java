@@ -9,8 +9,6 @@ public interface IUserRepository {
 
     UserDomain saveUser (UserDomain domain);
 
-    String loginUser(UserDomain domain);
-
     Optional<UserDomain> findUserById (String id);
 
     void deleteUser (String id);
