@@ -4,7 +4,7 @@ import com.andre.pedidosservice.exception.exceptions.UnauthorizedException;
 import com.andre.pedidosservice.security.JwtUtil;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.entities.UserEntity;
-import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationOut;
+import com.andre.pedidosservice.users.gateways.out.IUserAuthenticationOut;
 import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

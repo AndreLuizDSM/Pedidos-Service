@@ -1,4 +1,4 @@
-package com.andre.pedidosservice.users.gateways.out;
+package com.andre.pedidosservice.users.gateways.in;
 
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.core.UserStatus;
