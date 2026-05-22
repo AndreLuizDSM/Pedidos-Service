@@ -2,10 +2,10 @@ package com.andre.pedidosservice.users.adapters.config;
 
 import com.andre.pedidosservice.users.core.service.UserAuthentication;
 import com.andre.pedidosservice.users.core.service.UserService;
-import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationOut;
-import com.andre.pedidosservice.users.gateways.in.IUserRepository;
-import com.andre.pedidosservice.users.gateways.out.IUserAuthenticationIn;
-import com.andre.pedidosservice.users.gateways.out.IUserServiceGateway;
+import com.andre.pedidosservice.users.gateways.out.IUserAuthenticationOut;
+import com.andre.pedidosservice.users.gateways.out.IUserRepository;
+import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationIn;
+import com.andre.pedidosservice.users.gateways.in.IUserServiceGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

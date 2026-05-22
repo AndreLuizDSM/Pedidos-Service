@@ -6,7 +6,7 @@ import com.andre.pedidosservice.users.core.UserStatus;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.dtos.UserMapper;
 import com.andre.pedidosservice.users.entities.UserEntity;
-import com.andre.pedidosservice.users.gateways.in.IUserRepository;
+import com.andre.pedidosservice.users.gateways.out.IUserRepository;
 import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
