@@ -1,9 +1,11 @@
 package com.andre.pedidosservice.users.adapters.config;
 
+import com.andre.pedidosservice.users.core.service.UserAuthentication;
 import com.andre.pedidosservice.users.core.service.UserService;
-import com.andre.pedidosservice.users.gateways.in.IUserRepository;
-import com.andre.pedidosservice.users.gateways.out.IUserServiceGateway;
-import org.apache.catalina.User;
+import com.andre.pedidosservice.users.gateways.out.IUserAuthenticationOut;
+import com.andre.pedidosservice.users.gateways.out.IUserRepository;
+import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationIn;
+import com.andre.pedidosservice.users.gateways.in.IUserServiceGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,7 +16,7 @@ public class AdaptersConfig {
 
     // Bean criado para chamados que não vem por padrão pelo spring, no caso o BCryptPasswordEncoder
     @Bean
-    public PasswordEncoder passwordEncoderBCrypt (){
+    public PasswordEncoder passwordEncoder (){
         return new BCryptPasswordEncoder();
     }
 
@@ -23,5 +25,10 @@ public class AdaptersConfig {
     @Bean
     public IUserServiceGateway userRepository(IUserRepository repository){
         return new UserService(repository);
+    }
+
+    @Bean
+    public IUserAuthenticationIn userAuthentication(IUserAuthenticationOut authenticationIn){
+        return new UserAuthentication(authenticationIn);
     }
 }

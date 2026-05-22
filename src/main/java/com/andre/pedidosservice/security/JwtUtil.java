@@ -65,9 +65,9 @@ public class JwtUtil {
         return extractClaims(token).getExpiration().before(new Date());
     }
 
-    // Valida o token JWT verificando o nome de usuário e se o token não está expirado
+    // Valida o token JWT verificando o SUBJECT e se o token não está expirado
     public boolean validateToken(String token, String userID) {
-        // Extrai o nome de usuário do token
+        // Extrai o SUBJECT do token
         final String extractedUsername = extrairSubjectUUIDToken(token);
         // Verifica se o nome de usuário do token corresponde ao fornecido e se o token não está expirado
         return (extractedUsername.equals(userID) && !isTokenExpired(token));

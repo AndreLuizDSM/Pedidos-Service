@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.SignatureException;
 import java.time.LocalDateTime;
 
 // Intercepta cada request feito lendo o token passado pelo HEADER e faz a autenticação
@@ -49,16 +51,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             final String token = authorizationHeader.substring(7);
 
             // Extrai o SUBJECT do token JWT
-            final String userUUID = jwtUtil.extrairSubjectUUIDToken(token);
+            final String UUID = jwtUtil.extrairSubjectUUIDToken(token);
 
             // Se o nome de usuário não for nulo e o usuário não estiver autenticado ainda
-            if (userUUID != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (UUID != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 // Carrega os detalhes do usuário a partir do seu UUID ID
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userUUID);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(UUID);
 
                 // Valida o token JWT
-                if (jwtUtil.validateToken(token, userUUID)) {
+                if (jwtUtil.validateToken(token, userDetails.getUsername())) {
 
                     // Cria um objeto de autenticação com as informações do usuário
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -71,7 +73,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         // Continua a cadeia de filtros, permitindo que a requisição prossiga
         chain.doFilter(request, response);
-    }  catch(ExpiredJwtException e) {
+    }  catch(ExpiredJwtException | MalformedJwtException e) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.getWriter().write(buildError("Token inválido",

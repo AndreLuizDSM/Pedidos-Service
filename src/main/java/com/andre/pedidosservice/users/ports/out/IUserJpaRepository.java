@@ -1,6 +1,5 @@
-package com.andre.pedidosservice.users.ports.in;
+package com.andre.pedidosservice.users.ports.out;
 
-import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.entities.UserEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +11,8 @@ import java.util.Optional;
 public interface IUserJpaRepository extends JpaRepository<UserEntity, String> {
 
     boolean existsByEmail (String email);
+
+    Optional<UserEntity> findByEmail (String email);
 
     @Transactional
     void deleteById (String id);

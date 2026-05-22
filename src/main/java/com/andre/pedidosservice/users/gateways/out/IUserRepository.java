@@ -1,4 +1,4 @@
-package com.andre.pedidosservice.users.gateways.in;
+package com.andre.pedidosservice.users.gateways.out;
 
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.core.UserStatus;
@@ -8,8 +8,6 @@ import java.util.Optional;
 public interface IUserRepository {
 
     UserDomain saveUser (UserDomain domain);
-
-    String loginUser(UserDomain domain);
 
     Optional<UserDomain> findUserById (String id);
 

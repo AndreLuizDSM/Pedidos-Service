@@ -1,7 +1,11 @@
 package com.andre.pedidosservice.users.core.domain;
 
 
+import com.andre.pedidosservice.orders.core.domain.OrderDomain;
 import com.andre.pedidosservice.users.core.UserStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDomain {
 
@@ -10,6 +14,9 @@ public class UserDomain {
     private String password;
     private String id;
     private UserStatus status;
+
+    //OneToMany
+    private List<OrderDomain> order = new ArrayList<>();
 
 
     public UserDomain(String name, String email, String password, String id, UserStatus status) {
@@ -20,6 +27,15 @@ public class UserDomain {
         this.status = status;
     }
 
+    public UserDomain(OrderDomain order, UserStatus status, String id, String password, String email, String name) {
+        this.order.add(order);
+
+        this.status = status;
+        this.id = id;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+    }
 
     public UserDomain() {
     }
@@ -64,4 +80,11 @@ public class UserDomain {
         this.status = status;
     }
 
+    public List<OrderDomain> getOrder() {
+        return order;
+    }
+
+    public void setOrder(List<OrderDomain> order) {
+        this.order = order;
+    }
 }

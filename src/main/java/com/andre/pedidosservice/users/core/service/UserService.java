@@ -3,8 +3,8 @@ package com.andre.pedidosservice.users.core.service;
 import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.core.UserStatus;
-import com.andre.pedidosservice.users.gateways.in.IUserRepository;
-import com.andre.pedidosservice.users.gateways.out.IUserServiceGateway;
+import com.andre.pedidosservice.users.gateways.out.IUserRepository;
+import com.andre.pedidosservice.users.gateways.in.IUserServiceGateway;
 
 public class UserService implements IUserServiceGateway {
 
@@ -12,12 +12,6 @@ public class UserService implements IUserServiceGateway {
 
     public UserService(IUserRepository repository) {
         this.repository = repository;
-    }
-
-    @Override
-    public String login(UserDomain domain) {
-
-        return "";
     }
 
     @Override
@@ -31,7 +25,6 @@ public class UserService implements IUserServiceGateway {
         return repository.findUserById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Usuário não encontrado" + id));
     }
-
 
     @Override
     public void deleteUser(String id) {

@@ -2,19 +2,17 @@ package com.andre.pedidosservice.users.adapters.out;
 
 import com.andre.pedidosservice.exception.exceptions.InvalidRequestException;
 import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
+import com.andre.pedidosservice.users.core.UserStatus;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.dtos.UserMapper;
-import com.andre.pedidosservice.users.core.UserStatus;
 import com.andre.pedidosservice.users.entities.UserEntity;
-import com.andre.pedidosservice.users.gateways.in.IUserRepository;
-import com.andre.pedidosservice.users.ports.in.IUserJpaRepository;
+import com.andre.pedidosservice.users.gateways.out.IUserRepository;
+import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
-import static org.springframework.util.Assert.notNull;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +21,7 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     private final IUserJpaRepository jpaRepository;
     private final UserMapper mapper;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -50,12 +48,6 @@ public class UserRepositoryAdapter implements IUserRepository {
         }
 
         return true;
-    }
-
-    @Override
-    public String loginUser(UserDomain domain) {
-        notNull(domain, "Campo obrigatório");
-        return "";
     }
 
     @Override
