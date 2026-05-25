@@ -9,6 +9,7 @@ import com.andre.pedidosservice.users.entities.UserEntity;
 import com.andre.pedidosservice.users.gateways.out.IUserRepository;
 import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class UserRepositoryAdapter implements IUserRepository {
         return mapper.entityToDomain(entity);
     }
 
-    public boolean verifyEmail(String email) {
+    private boolean verifyEmail(String email) {
         if (!email.contains("@") || !email.contains(".")) {
             throw new InvalidRequestException("Credenciais inválidas");
         }
@@ -59,13 +60,17 @@ public class UserRepositoryAdapter implements IUserRepository {
     @Override
     public void deleteUser(String id) {
 
-        jpaRepository.deleteById(id);
+            if (findUserById(id).isEmpty()){
+                throw new ResourceNotFoundException("Usuário não encontrado " + id );
+            }
+            jpaRepository.deleteById(id);
+
     }
 
     @Override
     public UserDomain patchUserStatus(String id, UserStatus status) {
         UserEntity entity = jpaRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Usuário não existe")
+                () -> new ResourceNotFoundException("Usuário não encontrado " + id)
         );
         entity.setStatus(status);
 
