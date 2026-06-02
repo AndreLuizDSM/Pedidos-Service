@@ -9,6 +9,7 @@ import com.andre.pedidosservice.users.entities.UserEntity;
 import com.andre.pedidosservice.users.gateways.out.IUserRepository;
 import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,6 @@ public class UserRepositoryAdapter implements IUserRepository {
     public UserDomain saveUser(UserDomain domain) {
 
         UserEntity entity = mapper.domainToEntity(domain);
-        verifyEmail(entity.getEmail());
-        entity.setStatus(UserStatus.CLIENT);
 
         String encoded = passwordEncoder.encode(domain.getPassword());
         entity.setPassword(encoded);
@@ -38,17 +37,6 @@ public class UserRepositoryAdapter implements IUserRepository {
         return mapper.entityToDomain(entity);
     }
 
-    public boolean verifyEmail(String email) {
-        if (!email.contains("@") || !email.contains(".")) {
-            throw new InvalidRequestException("Credenciais inválidas");
-        }
-
-        if (jpaRepository.existsByEmail(email)) {
-            throw new InvalidRequestException("Email já existe");
-        }
-
-        return true;
-    }
 
     @Override
     public Optional<UserDomain> findUserById(String id) {
@@ -57,15 +45,24 @@ public class UserRepositoryAdapter implements IUserRepository {
     }
 
     @Override
+    public boolean existsByEmail(String email) {
+        return jpaRepository.existsByEmail(email);
+    }
+
+    @Override
     public void deleteUser(String id) {
 
-        jpaRepository.deleteById(id);
+            if (findUserById(id).isEmpty()){
+                throw new ResourceNotFoundException("Usuário não encontrado " + id );
+            }
+            jpaRepository.deleteById(id);
+
     }
 
     @Override
     public UserDomain patchUserStatus(String id, UserStatus status) {
         UserEntity entity = jpaRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Usuário não existe")
+                () -> new ResourceNotFoundException("Usuário não encontrado " + id)
         );
         entity.setStatus(status);
 

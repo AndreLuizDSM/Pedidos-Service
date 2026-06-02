@@ -1,5 +1,6 @@
 package com.andre.pedidosservice.users.adapters.in;
 
+import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.dtos.UserLoginDTO;
 import com.andre.pedidosservice.users.dtos.UserMapper;
 import com.andre.pedidosservice.users.dtos.UserRequestDTO;
@@ -28,7 +29,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> saveUser(@Valid @RequestBody UserRequestDTO dto) {
-        return ResponseEntity.ok(mapper.domainToResponse(serviceGateway.saveUser(mapper.requestToDomain(dto))));
+        UserDomain domain = serviceGateway.saveUser(dto.name(), dto.email(), dto.password());
+        return ResponseEntity.ok(mapper.domainToResponse(domain));
     }
 
     @PatchMapping("/{id}")
@@ -46,6 +48,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") String id) {
         serviceGateway.deleteUser(id);
+        System.out.println(id);
         return ResponseEntity.ok().build();
 
     }

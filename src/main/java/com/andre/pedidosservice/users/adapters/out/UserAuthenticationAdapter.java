@@ -24,6 +24,7 @@ public class UserAuthenticationAdapter implements IUserAuthenticationOut {
 
     private final IUserJpaRepository jpaRepository;
     private final JwtUtil jwtUtil;
+
     private final AuthenticationManager authenticationManager;
 
     @Override
@@ -39,11 +40,13 @@ public class UserAuthenticationAdapter implements IUserAuthenticationOut {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(entity.getId(), domain.getPassword())
             );
+            String token = "Bearer " + jwtUtil.generateToken(authentication.getName(), entity.getStatus());
 
-            return jwtUtil.generateToken(authentication.getName(), entity.getStatus());
+            System.out.println(jwtUtil.extrairSubjectUUIDToken(token.substring(7)));
+            return token;
 
         } catch (BadCredentialsException | UsernameNotFoundException e) {
-            throw new UnauthorizedException(e.getMessage());
+            throw new UnauthorizedException("Credenciais invalidas");
         }
 
     }

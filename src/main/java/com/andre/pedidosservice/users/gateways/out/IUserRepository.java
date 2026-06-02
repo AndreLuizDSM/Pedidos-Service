@@ -11,6 +11,8 @@ public interface IUserRepository {
 
     Optional<UserDomain> findUserById (String id);
 
+    boolean existsByEmail(String email);
+
     void deleteUser (String id);
 
     UserDomain patchUserStatus(String id , UserStatus status);
