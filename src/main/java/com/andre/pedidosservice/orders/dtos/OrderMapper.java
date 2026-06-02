@@ -36,8 +36,8 @@ public interface OrderMapper {
 
     // ─── OrderItemDomain → OrderItemResponseDTO ───────────────────────────────
 
-    // subtotal é calculado via expression porque não existe como campo no domain
-    @Mapping(target = "subtotal", expression = "java(domain.getPrice() * domain.getQuantity())")
+    @Mapping(source = "productPrice", target = "price")
+    @Mapping(target = "subtotal", expression = "java(domain.getProductPrice() * domain.getQuantity())")
     OrderItemResponseDTO itemDomainToResponse(OrderItemDomain domain);
 
     OrderResponseDTO domainToResponse(OrderDomain domain);

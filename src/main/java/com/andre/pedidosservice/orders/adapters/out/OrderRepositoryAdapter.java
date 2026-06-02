@@ -50,6 +50,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     public OrderDomain save(OrderDomain domain, UserDomain user) {
         OrderEntity entity = mapper.domainToEntity(domain);
         entity.setUser(userMapper.domainToEntity(user));
+
         return mapper.entityToDomain(orderJpaRepository.save(entity));
     }
 
@@ -86,6 +87,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
             productJpaRepository.save(product);
         }
 
+        orderEntity.setExpiresAt(LocalDateTime.now().plusHours(6));
         orderEntity.setTotalAmount(newTotal);
         orderEntity.setUpdatedAt(LocalDateTime.now());
 
@@ -98,6 +100,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
         OrderEntity order = orderJpaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
 
+        // Loop para cada item que possuia dentro do pedido , fazer o estoque de volta
         for (OrderItemEntity item : order.getOrderItems()) {
             ProductEntity product = item.getProduct();
             product.setStock(product.getStock() + item.getQuantity());
@@ -116,9 +119,11 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
         OrderItemEntity item = orderItemJpaRepository.findById(itemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Item não encontrado: " + itemId));
 
+        // Atualiza a persistencia
         order.setTotalAmount(newTotal);
         order.setUpdatedAt(LocalDateTime.now());
         order.getOrderItems().remove(item);
+        order.setExpiresAt(LocalDateTime.now().plusHours(6));
         orderJpaRepository.save(order);
 
         ProductEntity product = item.getProduct();
@@ -129,8 +134,27 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     @Override
     public List<OrderDomain> findByUserId(String userId) {
         return orderJpaRepository.findByUserId(userId)
+                // Recebe a lista , transforma individualmente cada usando map e transforma em lista novamente
                 .stream()
                 .map(mapper::entityToDomain)
                 .collect(Collectors.toList());
     }
+
+    // - - - - - - - - - métodos para scheduled - - - - - - - - -
+    @Override
+    public List<OrderDomain> findExpiredOrders() {
+        // Retorna os itens Pendentes que já passaram do prazo de validade
+        return orderJpaRepository.findByStatusAndExpiresAtBefore(OrderStatus.PENDENTE, LocalDateTime.now())
+                .stream()
+                .map(mapper::entityToDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteByStatus(OrderStatus status) {
+        // Deleta Order pelo status
+        orderJpaRepository.deleteByStatus(status);
+    }
+
 }
