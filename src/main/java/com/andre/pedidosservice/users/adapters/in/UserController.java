@@ -6,8 +6,8 @@ import com.andre.pedidosservice.users.dtos.UserMapper;
 import com.andre.pedidosservice.users.dtos.UserRequestDTO;
 import com.andre.pedidosservice.users.dtos.UserResponseDTO;
 import com.andre.pedidosservice.users.core.UserStatus;
-import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationIn;
-import com.andre.pedidosservice.users.gateways.in.IUserServiceGateway;
+import com.andre.pedidosservice.users.gateways.in.UserAuthenticationService;
+import com.andre.pedidosservice.users.gateways.in.UserServiceGateway;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final IUserServiceGateway serviceGateway;
-    private final IUserAuthenticationIn authentication;
+    private final UserServiceGateway serviceGateway;
+    private final UserAuthenticationService authentication;
     private final UserMapper mapper;
 
     @PostMapping("/login")
@@ -28,15 +28,15 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> saveUser(@Valid @RequestBody UserRequestDTO dto) {
-        UserDomain domain = serviceGateway.saveUser(dto.name(), dto.email(), dto.password());
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO dto) {
+        UserDomain domain = serviceGateway.createUser(dto.name(), dto.email(), dto.password());
         return ResponseEntity.ok(mapper.domainToResponse(domain));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> patchUserStatus(@PathVariable("id") String id,
-                                                           @RequestParam("status") UserStatus status) {
-        return ResponseEntity.ok(mapper.domainToResponse(serviceGateway.patchStatus(id, status)));
+    public ResponseEntity<UserResponseDTO> updateUserStatus(@PathVariable("id") String id,
+                                                            @RequestParam("status") UserStatus status) {
+        return ResponseEntity.ok(mapper.domainToResponse(serviceGateway.updateUserStatus(id, status)));
     }
 
 

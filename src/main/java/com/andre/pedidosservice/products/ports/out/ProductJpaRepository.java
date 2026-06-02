@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 // Porta de infraestrutura: Spring Data JPA fornece automaticamente save, findById, findAll, deleteById
 @Repository
-public interface IProductJpaRepository extends JpaRepository<ProductEntity, String> {
+public interface ProductJpaRepository extends JpaRepository<ProductEntity, String> {
 }

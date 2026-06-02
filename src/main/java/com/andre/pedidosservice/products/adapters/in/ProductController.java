@@ -4,10 +4,9 @@ import com.andre.pedidosservice.products.core.domain.ProductDomain;
 import com.andre.pedidosservice.products.dtos.ProductMapper;
 import com.andre.pedidosservice.products.dtos.ProductRequestDTO;
 import com.andre.pedidosservice.products.dtos.ProductResponseDTO;
-import com.andre.pedidosservice.products.gateways.in.IProductServiceGateway;
+import com.andre.pedidosservice.products.gateways.in.ProductServiceGateway;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final IProductServiceGateway service;
+    private final ProductServiceGateway service;
     private final ProductMapper mapper;
 
     // Somente ADMIN pode criar produtos (regra definida no SecurityConfig)

@@ -5,17 +5,17 @@ import com.andre.pedidosservice.users.core.UserStatus;
 
 import java.util.Optional;
 
-public interface IUserRepository {
+public interface UserRepositoryGateway {
 
-    UserDomain saveUser (UserDomain domain);
+    UserDomain save(UserDomain domain);
 
-    Optional<UserDomain> findUserById (String id);
+    Optional<UserDomain> findById(String id);
 
     boolean existsByEmail(String email);
 
-    void deleteUser (String id);
+    void deleteById(String id);
 
-    UserDomain patchUserStatus(String id , UserStatus status);
+    UserDomain updateStatus(String id, UserStatus status);
 
 
 }

@@ -16,7 +16,7 @@ public class OrderItemDomain {
     private String productName;
 
     // Snapshot do preço do produto no momento da compra
-    private double price;
+    private double productPrice;
 
     private Integer quantity;
 
@@ -52,12 +52,12 @@ public class OrderItemDomain {
         this.productName = productName;
     }
 
-    public double getPrice() {
-        return price;
+    public double getProductPrice() {
+        return productPrice;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
     }
 
     public Integer getQuantity() {
