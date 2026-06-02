@@ -1,6 +1,7 @@
 package com.andre.pedidosservice.users.core.domain;
 
 
+import com.andre.pedidosservice.exception.exceptions.InvalidRequestException;
 import com.andre.pedidosservice.orders.core.domain.OrderDomain;
 import com.andre.pedidosservice.users.core.UserStatus;
 
@@ -38,6 +39,19 @@ public class UserDomain {
     }
 
     public UserDomain() {
+    }
+
+    public static UserDomain newUser(String name, String email, String password){
+        if(!email.contains("@") || !email.contains(".")){
+            throw new InvalidRequestException("Email invalido");
+        }
+        UserDomain domain = new UserDomain();
+        domain.setName(name);
+        domain.setEmail(email);
+        domain.setPassword(password);
+        domain.setStatus(UserStatus.CLIENT);
+
+        return domain;
     }
 
     public String getName() {

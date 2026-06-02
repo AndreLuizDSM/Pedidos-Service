@@ -3,6 +3,8 @@ package com.andre.pedidosservice.orders.adapters.config;
 import com.andre.pedidosservice.orders.core.service.OrderService;
 import com.andre.pedidosservice.orders.gateways.in.IOrderGatewayService;
 import com.andre.pedidosservice.orders.gateways.out.IOrderRepositoryGateway;
+import com.andre.pedidosservice.products.gateways.out.IProductRepositoryGateway;
+import com.andre.pedidosservice.users.gateways.out.IUserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +12,9 @@ import org.springframework.context.annotation.Configuration;
 public class OrderAdaptersConfig {
 
     @Bean
-    public IOrderGatewayService orderService(IOrderRepositoryGateway repository) {
-        return new OrderService(repository);
+    public IOrderGatewayService orderService(IOrderRepositoryGateway repository,
+                                             IProductRepositoryGateway productRepository,
+                                             IUserRepository userRepository) {
+        return new OrderService(repository, productRepository, userRepository);
     }
 }

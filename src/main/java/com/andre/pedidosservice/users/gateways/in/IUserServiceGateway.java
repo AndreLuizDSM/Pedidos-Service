@@ -5,7 +5,7 @@ import com.andre.pedidosservice.users.core.UserStatus;
 
 public interface IUserServiceGateway {
 
-    UserDomain saveUser (UserDomain domain);
+    UserDomain saveUser (String name ,String email, String password);
 
     UserDomain getUserById (String id);
 

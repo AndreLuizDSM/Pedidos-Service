@@ -46,7 +46,7 @@ public class UserAuthenticationAdapter implements IUserAuthenticationOut {
             return token;
 
         } catch (BadCredentialsException | UsernameNotFoundException e) {
-            throw new UnauthorizedException(e.getMessage());
+            throw new UnauthorizedException("Credenciais invalidas");
         }
 
     }
