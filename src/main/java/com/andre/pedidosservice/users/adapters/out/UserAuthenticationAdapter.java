@@ -4,8 +4,8 @@ import com.andre.pedidosservice.exception.exceptions.UnauthorizedException;
 import com.andre.pedidosservice.security.JwtUtil;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.entities.UserEntity;
-import com.andre.pedidosservice.users.gateways.out.IUserAuthenticationOut;
-import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
+import com.andre.pedidosservice.users.gateways.out.UserAuthenticationGateway;
+import com.andre.pedidosservice.users.ports.out.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,9 +20,9 @@ import static org.springframework.util.Assert.notNull;
 
 @RequiredArgsConstructor
 @Service
-public class UserAuthenticationAdapter implements IUserAuthenticationOut {
+public class UserAuthenticationAdapter implements UserAuthenticationGateway {
 
-    private final IUserJpaRepository jpaRepository;
+    private final UserJpaRepository jpaRepository;
     private final JwtUtil jwtUtil;
 
     private final AuthenticationManager authenticationManager;

@@ -1,7 +1,7 @@
 package com.andre.pedidosservice.security;
 
 import com.andre.pedidosservice.users.entities.UserEntity;
-import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
+import com.andre.pedidosservice.users.ports.out.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +15,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     // Repositório para acessar dados de usuário no banco de dados
     @Autowired
-    private IUserJpaRepository jpaRepository;
+    private UserJpaRepository jpaRepository;
 
     // Implementação do método para carregar detalhes do usuário pelo UUID ID
     @Override

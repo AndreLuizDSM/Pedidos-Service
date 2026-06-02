@@ -10,13 +10,13 @@ import java.util.Optional;
  * Define o contrato que o adapter de persistência deve implementar.
  * O serviço de domínio depende apenas desta interface, nunca do JPA diretamente.
  */
-public interface IProductRepositoryGateway {
+public interface ProductRepositoryGateway {
 
-    ProductDomain saveProduct(ProductDomain domain);
+    ProductDomain save(ProductDomain domain);
 
-    Optional<ProductDomain> findProductById(String id);
+    Optional<ProductDomain> findById(String id);
 
-    List<ProductDomain> findAllProducts();
+    List<ProductDomain> findAll();
 
-    void deleteProduct(String id);
+    void deleteById(String id);
 }

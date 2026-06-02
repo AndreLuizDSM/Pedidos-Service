@@ -3,8 +3,8 @@ package com.andre.pedidosservice.products.adapters.out;
 import com.andre.pedidosservice.products.core.domain.ProductDomain;
 import com.andre.pedidosservice.products.dtos.ProductMapper;
 import com.andre.pedidosservice.products.entities.ProductEntity;
-import com.andre.pedidosservice.products.gateways.out.IProductRepositoryGateway;
-import com.andre.pedidosservice.products.ports.out.IProductJpaRepository;
+import com.andre.pedidosservice.products.gateways.out.ProductRepositoryGateway;
+import com.andre.pedidosservice.products.ports.out.ProductJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,25 +19,24 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class ProductRepositoryAdapter implements IProductRepositoryGateway {
+public class ProductRepositoryAdapter implements ProductRepositoryGateway {
 
-    private final IProductJpaRepository jpaRepository;
+    private final ProductJpaRepository jpaRepository;
     private final ProductMapper mapper;
 
     @Override
-    public ProductDomain saveProduct(ProductDomain domain) {
-        // Converte domain para entity, persiste e retorna o domain com ID gerado
+    public ProductDomain save(ProductDomain domain) {
         ProductEntity entity = mapper.domainToEntity(domain);
         return mapper.entityToDomain(jpaRepository.save(entity));
     }
 
     @Override
-    public Optional<ProductDomain> findProductById(String id) {
+    public Optional<ProductDomain> findById(String id) {
         return jpaRepository.findById(id).map(mapper::entityToDomain);
     }
 
     @Override
-    public List<ProductDomain> findAllProducts() {
+    public List<ProductDomain> findAll() {
         return jpaRepository.findAll()
                 .stream()
                 .map(mapper::entityToDomain)
@@ -45,7 +44,7 @@ public class ProductRepositoryAdapter implements IProductRepositoryGateway {
     }
 
     @Override
-    public void deleteProduct(String id) {
+    public void deleteById(String id) {
         jpaRepository.deleteById(id);
     }
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 // Repositório JPA dedicado aos itens de pedido — permite buscar um item diretamente pelo seu ID
 @Repository
-public interface IOrderItemJpaRepository extends JpaRepository<OrderItemEntity, String> {
+public interface OrderItemJpaRepository extends JpaRepository<OrderItemEntity, String> {
 }

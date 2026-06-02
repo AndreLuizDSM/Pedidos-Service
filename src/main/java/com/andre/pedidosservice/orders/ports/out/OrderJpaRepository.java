@@ -8,7 +8,7 @@ import java.util.List;
 
 // Porta de infraestrutura de pedidos: Spring Data JPA fornece save, findById, deleteById automaticamente
 @Repository
-public interface IOrderJpaRepository extends JpaRepository<OrderEntity, String> {
+public interface OrderJpaRepository extends JpaRepository<OrderEntity, String> {
 
     // Busca todos os pedidos de um usuário específico — usado em getOrdersByUserId
     List<OrderEntity> findByUserId(String userId);
