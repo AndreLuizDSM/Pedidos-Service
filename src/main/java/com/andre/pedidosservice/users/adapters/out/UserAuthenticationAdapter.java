@@ -43,7 +43,7 @@ public class UserAuthenticationAdapter implements IUserAuthenticationOut {
             return jwtUtil.generateToken(authentication.getName(), entity.getStatus());
 
         } catch (BadCredentialsException | UsernameNotFoundException e) {
-            throw new UnauthorizedException(e.getMessage());
+            throw new UnauthorizedException("Credenciais invalidas");
         }
 
     }

@@ -48,6 +48,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/user/**").hasAuthority("ADMIN")
                         .requestMatchers("/user/**").authenticated() // Requer autenticação para qualquer endpoint
                         // que comece com /user/
+
+                        // Somente ADMIN pode criar, atualizar e deletar produtos do catálogo
+                        .requestMatchers(HttpMethod.POST, "/product").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/product/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasAuthority("ADMIN")
+
                         .anyRequest().authenticated() // Requer autenticação para todas as outras requisições
                 )
                 .sessionManagement(session -> session

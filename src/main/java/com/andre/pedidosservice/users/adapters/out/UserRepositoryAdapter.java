@@ -28,8 +28,6 @@ public class UserRepositoryAdapter implements IUserRepository {
     public UserDomain saveUser(UserDomain domain) {
 
         UserEntity entity = mapper.domainToEntity(domain);
-        verifyEmail(entity.getEmail());
-        entity.setStatus(UserStatus.CLIENT);
 
         String encoded = passwordEncoder.encode(domain.getPassword());
         entity.setPassword(encoded);
@@ -38,22 +36,16 @@ public class UserRepositoryAdapter implements IUserRepository {
         return mapper.entityToDomain(entity);
     }
 
-    public boolean verifyEmail(String email) {
-        if (!email.contains("@") || !email.contains(".")) {
-            throw new InvalidRequestException("Credenciais inválidas");
-        }
-
-        if (jpaRepository.existsByEmail(email)) {
-            throw new InvalidRequestException("Email já existe");
-        }
-
-        return true;
-    }
 
     @Override
     public Optional<UserDomain> findUserById(String id) {
 
         return jpaRepository.findById(id).map(mapper::entityToDomain);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return jpaRepository.existsByEmail(email);
     }
 
     @Override

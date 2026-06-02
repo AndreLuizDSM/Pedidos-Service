@@ -1,17 +1,70 @@
 package com.andre.pedidosservice.orders.core.domain;
 
-import com.andre.pedidosservice.products.core.domain.ProductDomain;
-
-//Pegarei o produto , pode ser mais de um , e colocarei no Order.
+/*
+ * Domínio de um item dentro de um pedido.
+ * Representa um produto específico adicionado ao pedido, com snapshot de preço e nome
+ * no momento da compra (garante histórico mesmo que o produto seja editado depois).
+ */
 public class OrderItemDomain {
 
     private String id;
+
+    // ID do produto referenciado — usado para buscar o produto no adapter
     private String productId;
+
+    // Snapshot do nome do produto no momento da compra
     private String productName;
+
+    // Snapshot do preço do produto no momento da compra
     private double price;
+
     private Integer quantity;
 
-    //ManyToOne
-    private ProductDomain product;
-    private OrderDomain order;
+    public OrderItemDomain() {
+    }
+
+    public OrderItemDomain(String productId, Integer quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }

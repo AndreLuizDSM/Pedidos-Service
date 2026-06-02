@@ -1,10 +1,12 @@
 package com.andre.pedidosservice.users.core.service;
 
+import com.andre.pedidosservice.exception.exceptions.InvalidRequestException;
 import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.core.UserStatus;
 import com.andre.pedidosservice.users.gateways.out.IUserRepository;
 import com.andre.pedidosservice.users.gateways.in.IUserServiceGateway;
+
 
 public class UserService implements IUserServiceGateway {
 
@@ -15,7 +17,12 @@ public class UserService implements IUserServiceGateway {
     }
 
     @Override
-    public UserDomain saveUser(UserDomain domain) {
+    public UserDomain saveUser(String name ,String email, String password) {
+        // Criação de usuário para validar o recebimento de dados e persistir depois
+        UserDomain domain = UserDomain.newUser(name, email, password);
+        if (repository.existsByEmail(domain.getEmail())) {
+            throw new InvalidRequestException("Email já existe");
+        }
 
         return repository.saveUser(domain);
     }
@@ -28,7 +35,7 @@ public class UserService implements IUserServiceGateway {
 
     @Override
     public void deleteUser(String id) {
-
+        getUserById(id);
         repository.deleteUser(id);
     }
 
