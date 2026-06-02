@@ -10,19 +10,19 @@ import java.util.List;
  * Porta de entrada do módulo Orders.
  * É o contrato que o controller usa para se comunicar com a camada de serviço.
  */
-public interface IOrderGatewayService {
+public interface OrderGatewayService {
 
     OrderDomain createOrder(String userId);
 
-    OrderDomain addOrderItem(String id, List<OrderItemDomain> orderItemDomain);
+    OrderDomain addOrderItem(String orderId, List<OrderItemDomain> items);
 
-    OrderDomain updateStatusOrder(OrderStatus status, String id);
+    OrderDomain updateOrderStatus(String id, OrderStatus status);
 
-    OrderDomain getOrderByID(String id);
+    OrderDomain getOrderById(String id);
 
     void deleteOrder(String id);
 
-    OrderDomain deleteOrderItemByID(String orderID, String orderItemID);
+    OrderDomain deleteOrderItem(String orderId, String orderItemId);
 
     List<OrderDomain> getOrdersByUserId(String userId);
 }

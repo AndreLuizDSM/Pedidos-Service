@@ -9,7 +9,7 @@ import java.util.List;
  * É o contrato que o controller usa para se comunicar com a camada de serviço.
  * Isola o controller de qualquer implementação concreta do serviço.
  */
-public interface IProductServiceGateway {
+public interface ProductServiceGateway {
 
     ProductDomain createProduct(ProductDomain domain);
 

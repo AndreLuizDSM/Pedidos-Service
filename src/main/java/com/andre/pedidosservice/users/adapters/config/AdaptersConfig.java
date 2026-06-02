@@ -2,10 +2,10 @@ package com.andre.pedidosservice.users.adapters.config;
 
 import com.andre.pedidosservice.users.core.service.UserAuthentication;
 import com.andre.pedidosservice.users.core.service.UserService;
-import com.andre.pedidosservice.users.gateways.out.IUserAuthenticationOut;
-import com.andre.pedidosservice.users.gateways.out.IUserRepository;
-import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationIn;
-import com.andre.pedidosservice.users.gateways.in.IUserServiceGateway;
+import com.andre.pedidosservice.users.gateways.out.UserAuthenticationGateway;
+import com.andre.pedidosservice.users.gateways.out.UserRepositoryGateway;
+import com.andre.pedidosservice.users.gateways.in.UserAuthenticationService;
+import com.andre.pedidosservice.users.gateways.in.UserServiceGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,12 +23,12 @@ public class AdaptersConfig {
     // Bean criado para que ServiceGateway entre nos containers do Spring e possa ser injetado automáticamente
     // no pedido da Controller, sem isso, o Spring ignora o pedido e a controller não tem acesso a Service
     @Bean
-    public IUserServiceGateway userRepository(IUserRepository repository){
+    public UserServiceGateway userRepository(UserRepositoryGateway repository){
         return new UserService(repository);
     }
 
     @Bean
-    public IUserAuthenticationIn userAuthentication(IUserAuthenticationOut authenticationIn){
+    public UserAuthenticationService userAuthentication(UserAuthenticationGateway authenticationIn){
         return new UserAuthentication(authenticationIn);
     }
 }

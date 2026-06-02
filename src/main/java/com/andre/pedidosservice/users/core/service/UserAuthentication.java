@@ -1,14 +1,14 @@
 package com.andre.pedidosservice.users.core.service;
 
 import com.andre.pedidosservice.users.core.domain.UserDomain;
-import com.andre.pedidosservice.users.gateways.out.IUserAuthenticationOut;
-import com.andre.pedidosservice.users.gateways.in.IUserAuthenticationIn;
+import com.andre.pedidosservice.users.gateways.out.UserAuthenticationGateway;
+import com.andre.pedidosservice.users.gateways.in.UserAuthenticationService;
 
-public class UserAuthentication implements IUserAuthenticationIn {
+public class UserAuthentication implements UserAuthenticationService {
 
-    private final IUserAuthenticationOut authentication;
+    private final UserAuthenticationGateway authentication;
 
-    public UserAuthentication(IUserAuthenticationOut authentication) {
+    public UserAuthentication(UserAuthenticationGateway authentication) {
         this.authentication = authentication;
     }
 

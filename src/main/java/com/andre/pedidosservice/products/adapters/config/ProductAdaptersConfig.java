@@ -1,8 +1,8 @@
 package com.andre.pedidosservice.products.adapters.config;
 
 import com.andre.pedidosservice.products.core.service.ProductService;
-import com.andre.pedidosservice.products.gateways.in.IProductServiceGateway;
-import com.andre.pedidosservice.products.gateways.out.IProductRepositoryGateway;
+import com.andre.pedidosservice.products.gateways.in.ProductServiceGateway;
+import com.andre.pedidosservice.products.gateways.out.ProductRepositoryGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class ProductAdaptersConfig {
 
     @Bean
-    public IProductServiceGateway productService(IProductRepositoryGateway repository) {
+    public ProductServiceGateway productService(ProductRepositoryGateway repository) {
         return new ProductService(repository);
     }
 }

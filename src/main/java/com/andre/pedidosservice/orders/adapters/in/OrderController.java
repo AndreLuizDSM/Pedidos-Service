@@ -4,7 +4,7 @@ import com.andre.pedidosservice.orders.core.OrderStatus;
 import com.andre.pedidosservice.orders.dtos.OrderItemRequestDTO;
 import com.andre.pedidosservice.orders.dtos.OrderMapper;
 import com.andre.pedidosservice.orders.dtos.OrderResponseDTO;
-import com.andre.pedidosservice.orders.gateways.in.IOrderGatewayService;
+import com.andre.pedidosservice.orders.gateways.in.OrderGatewayService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final IOrderGatewayService service;
+    private final OrderGatewayService service;
     private final OrderMapper mapper;
 
     @PostMapping
@@ -41,19 +41,18 @@ public class OrderController {
                                                             @PathVariable String idOrderItem) {
 
         // ID do pedido , e ID do Item
-        return ResponseEntity.ok(mapper.domainToResponse(service.deleteOrderItemByID(idOrder, idOrderItem)));
+        return ResponseEntity.ok(mapper.domainToResponse(service.deleteOrderItem(idOrder, idOrderItem)));
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<OrderResponseDTO> updateStatusOrder(@PathVariable String id,
+    public ResponseEntity<OrderResponseDTO> updateOrderStatus(@PathVariable String id,
                                                               @RequestParam OrderStatus status) {
-        // Update Status = PENDENTE , CANCELADO , ENTREGUE , CONFIRMADO
-        return ResponseEntity.ok(mapper.domainToResponse(service.updateStatusOrder(status, id)));
+        return ResponseEntity.ok(mapper.domainToResponse(service.updateOrderStatus(id, status)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable String id) {
-        return ResponseEntity.ok(mapper.domainToResponse(service.getOrderByID(id)));
+        return ResponseEntity.ok(mapper.domainToResponse(service.getOrderById(id)));
     }
 
     @DeleteMapping("/{id}")

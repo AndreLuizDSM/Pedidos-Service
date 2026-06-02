@@ -7,15 +7,13 @@ import com.andre.pedidosservice.orders.core.domain.OrderItemDomain;
 import com.andre.pedidosservice.orders.dtos.OrderMapper;
 import com.andre.pedidosservice.orders.entities.OrderEntity;
 import com.andre.pedidosservice.orders.entities.OrderItemEntity;
-import com.andre.pedidosservice.orders.gateways.out.IOrderRepositoryGateway;
-import com.andre.pedidosservice.orders.ports.out.IOrderItemJpaRepository;
-import com.andre.pedidosservice.orders.ports.out.IOrderJpaRepository;
+import com.andre.pedidosservice.orders.gateways.out.OrderRepositoryGateway;
+import com.andre.pedidosservice.orders.ports.out.OrderItemJpaRepository;
+import com.andre.pedidosservice.orders.ports.out.OrderJpaRepository;
 import com.andre.pedidosservice.products.entities.ProductEntity;
-import com.andre.pedidosservice.products.ports.out.IProductJpaRepository;
+import com.andre.pedidosservice.products.ports.out.ProductJpaRepository;
 import com.andre.pedidosservice.users.core.domain.UserDomain;
 import com.andre.pedidosservice.users.dtos.UserMapper;
-import com.andre.pedidosservice.users.entities.UserEntity;
-import com.andre.pedidosservice.users.ports.out.IUserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,40 +25,38 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OrderRepositoryAdapter implements IOrderRepositoryGateway {
+public class OrderRepositoryAdapter implements OrderRepositoryGateway {
 
-    private final IOrderJpaRepository orderJpaRepository;
-    private final IOrderItemJpaRepository orderItemJpaRepository;
-    private final IProductJpaRepository productJpaRepository;
+    private final OrderJpaRepository orderJpaRepository;
+    private final OrderItemJpaRepository orderItemJpaRepository;
+    private final ProductJpaRepository productJpaRepository;
     private final OrderMapper mapper;
     private final UserMapper userMapper;
 
     @Override
-    public Optional<OrderDomain> getOrderById(String id) {
+    public Optional<OrderDomain> findById(String id) {
         if (id == null) return Optional.empty();
         return orderJpaRepository.findById(id).map(mapper::entityToDomain);
     }
 
     @Override
-    public Optional<OrderItemDomain> getOrderItemById(String itemId) {
-        // Vefificação de item
+    public Optional<OrderItemDomain> findItemById(String itemId) {
         if (itemId == null) return Optional.empty();
         return orderItemJpaRepository.findById(itemId).map(mapper::itemEntityToDomain);
     }
 
     @Override
     @Transactional
-    public OrderDomain createOrder(OrderDomain domain, UserDomain user) {
-
-        // Persistência e acoplamento de user com order
+    public OrderDomain save(OrderDomain domain, UserDomain user) {
         OrderEntity entity = mapper.domainToEntity(domain);
         entity.setUser(userMapper.domainToEntity(user));
+
         return mapper.entityToDomain(orderJpaRepository.save(entity));
     }
 
     @Override
     @Transactional
-    public OrderDomain updateOrderStatus(String orderId, OrderStatus status) {
+    public OrderDomain updateStatus(String orderId, OrderStatus status) {
         OrderEntity entity = orderJpaRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
         entity.setStatus(status);
@@ -70,38 +66,41 @@ public class OrderRepositoryAdapter implements IOrderRepositoryGateway {
 
     @Override
     @Transactional
-    public OrderDomain saveOrderItems(String orderId, List<OrderItemDomain> preparedItems, double newTotal) {
-        OrderEntity order = orderJpaRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
+    public OrderDomain saveItems(OrderDomain order, List<OrderItemDomain> preparedItems, double newTotal) {
+        OrderEntity orderEntity = orderJpaRepository.findById(order.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Pedido nao encontrado " + order.getId())
+        );
 
         for (OrderItemDomain itemDomain : preparedItems) {
             ProductEntity product = productJpaRepository.findById(itemDomain.getProductId())
                     .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado: " + itemDomain.getProductId()));
 
             OrderItemEntity itemEntity = new OrderItemEntity();
-            itemEntity.setOrder(order);
+            itemEntity.setOrder(orderEntity);
             itemEntity.setProduct(product);
             itemEntity.setProductName(itemDomain.getProductName());
-            itemEntity.setPrice(itemDomain.getPrice());
+            itemEntity.setPrice(itemDomain.getProductPrice());
             itemEntity.setQuantity(itemDomain.getQuantity());
-            order.getOrderItems().add(itemEntity);
+            orderEntity.getOrderItems().add(itemEntity);
 
             product.setStock(product.getStock() - itemDomain.getQuantity());
             productJpaRepository.save(product);
         }
 
-        order.setTotalAmount(newTotal);
-        order.setUpdatedAt(LocalDateTime.now());
+        orderEntity.setExpiresAt(LocalDateTime.now().plusHours(6));
+        orderEntity.setTotalAmount(newTotal);
+        orderEntity.setUpdatedAt(LocalDateTime.now());
 
-        return mapper.entityToDomain(orderJpaRepository.save(order));
+        return mapper.entityToDomain(orderJpaRepository.save(orderEntity));
     }
 
     @Override
     @Transactional
-    public void removeOrderById(String id) {
+    public void deleteById(String id) {
         OrderEntity order = orderJpaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
 
+        // Loop para cada item que possuia dentro do pedido , fazer o estoque de volta
         for (OrderItemEntity item : order.getOrderItems()) {
             ProductEntity product = item.getProduct();
             product.setStock(product.getStock() + item.getQuantity());
@@ -113,16 +112,18 @@ public class OrderRepositoryAdapter implements IOrderRepositoryGateway {
 
     @Override
     @Transactional
-    public void removeOrderItemById(String orderId, String itemId, double newTotal) {
+    public void deleteItemById(String orderId, String itemId, double newTotal) {
         OrderEntity order = orderJpaRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
 
         OrderItemEntity item = orderItemJpaRepository.findById(itemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Item não encontrado: " + itemId));
 
+        // Atualiza a persistencia
         order.setTotalAmount(newTotal);
         order.setUpdatedAt(LocalDateTime.now());
         order.getOrderItems().remove(item);
+        order.setExpiresAt(LocalDateTime.now().plusHours(6));
         orderJpaRepository.save(order);
 
         ProductEntity product = item.getProduct();
@@ -131,10 +132,29 @@ public class OrderRepositoryAdapter implements IOrderRepositoryGateway {
     }
 
     @Override
-    public List<OrderDomain> getOrdersByUserId(String userId) {
+    public List<OrderDomain> findByUserId(String userId) {
         return orderJpaRepository.findByUserId(userId)
+                // Recebe a lista , transforma individualmente cada usando map e transforma em lista novamente
                 .stream()
                 .map(mapper::entityToDomain)
                 .collect(Collectors.toList());
     }
+
+    // - - - - - - - - - métodos para scheduled - - - - - - - - -
+    @Override
+    public List<OrderDomain> findExpiredOrders() {
+        // Retorna os itens Pendentes que já passaram do prazo de validade
+        return orderJpaRepository.findByStatusAndExpiresAtBefore(OrderStatus.PENDENTE, LocalDateTime.now())
+                .stream()
+                .map(mapper::entityToDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteByStatus(OrderStatus status) {
+        // Deleta Order pelo status
+        orderJpaRepository.deleteByStatus(status);
+    }
+
 }

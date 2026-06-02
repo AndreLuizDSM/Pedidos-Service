@@ -2,52 +2,48 @@ package com.andre.pedidosservice.products.core.service;
 
 import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
 import com.andre.pedidosservice.products.core.domain.ProductDomain;
-import com.andre.pedidosservice.products.gateways.in.IProductServiceGateway;
-import com.andre.pedidosservice.products.gateways.out.IProductRepositoryGateway;
+import com.andre.pedidosservice.products.gateways.in.ProductServiceGateway;
+import com.andre.pedidosservice.products.gateways.out.ProductRepositoryGateway;
 
 import java.util.List;
 
-public class ProductService implements IProductServiceGateway {
+public class ProductService implements ProductServiceGateway {
 
     // Porta de saída injetada via construtor — desacopla o serviço do mecanismo de persistência
-    private final IProductRepositoryGateway repository;
+    private final ProductRepositoryGateway repository;
 
-    public ProductService(IProductRepositoryGateway repository) {
+    public ProductService(ProductRepositoryGateway repository) {
         this.repository = repository;
     }
 
     @Override
     public ProductDomain createProduct(ProductDomain domain) {
-        // O ID é gerado automaticamente na camada de persistência (UUID)
-        return repository.saveProduct(domain);
+        return repository.save(domain);
     }
 
     @Override
     public ProductDomain getProductById(String id) {
-        // Lança exceção padronizada se o produto não existir no banco
-        return repository.findProductById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
     }
 
     @Override
     public List<ProductDomain> getAllProducts() {
-        return repository.findAllProducts();
+        return repository.findAll();
     }
 
     @Override
     public ProductDomain updateProduct(String id, ProductDomain domain) {
-        // Busca o produto existente para garantir que ele existe antes de atualizar
         ProductDomain existing = getProductById(id);
         existing.setName(domain.getName());
         existing.setPrice(domain.getPrice());
         existing.setStock(domain.getStock());
-        return repository.saveProduct(existing);
+        return repository.save(existing);
     }
 
     @Override
     public void deleteProduct(String id) {
-        // Valida existência antes de deletar para garantir uma resposta 404 explícita
         getProductById(id);
-        repository.deleteProduct(id);
+        repository.deleteById(id);
     }
 }
