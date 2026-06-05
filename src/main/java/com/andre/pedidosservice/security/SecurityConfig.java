@@ -1,6 +1,6 @@
 package com.andre.pedidosservice.security;
 
-import com.andre.pedidosservice.users.core.UserStatus;
+import com.andre.pedidosservice.user.core.UserStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

@@ -1,6 +1,6 @@
 package com.andre.pedidosservice.security;
 
-import com.andre.pedidosservice.users.core.UserStatus;
+import com.andre.pedidosservice.user.core.UserStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
