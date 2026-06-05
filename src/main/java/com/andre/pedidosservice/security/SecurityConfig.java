@@ -1,9 +1,14 @@
 package com.andre.pedidosservice.security;
 
+import com.andre.pedidosservice.exception.exceptions.ErrorResponseDTO;
 import com.andre.pedidosservice.user.core.UserStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -56,6 +61,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/product/**").hasAuthority("ADMIN")
 
                         .anyRequest().authenticated() // Requer autenticação para todas as outras requisições
+                )
+                // Handling próprio do HttpSecurity
+                .exceptionHandling(ex -> ex
+                        // Sem credencial ou token inválido -> 401 Unauthorized
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized"))
+                        // Autenticado, mas sem permissão (ex: não-ADMIN tentando DELETE) -> 403 Forbidden
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                response.sendError(HttpStatus.FORBIDDEN.value(), "Forbidden"))
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Configura a política de
