@@ -108,37 +108,37 @@ public class OrderMapperTest {
     }
 
     @Test
-    void deveConverterItemEntityParaDomain(){
+    void should_ReturnItemDomain_when_ConvertFromItemEntity(){
         OrderItemDomain domain = mapper.itemEntityToDomain(orderItemEntity);
         assertEquals(itemDomainFromEntityFixture, domain);
     }
 
     @Test
-    void deveConverterEntityParaDomain(){
+    void should_ReturnDomain_when_ConvertFromEntity(){
         OrderDomain domain = mapper.entityToDomain(orderEntity);
         assertEquals(orderDomainFromEntityFixture, domain);
     }
 
     @Test
-    void deveConverterRequestParaItemDomain(){
+    void should_ReturnItemDomain_when_ConvertFromRequest(){
         OrderItemDomain domain = mapper.requestToItemDomain(orderItemRequest);
         assertEquals(itemDomainFromRequestFixture, domain);
     }
 
     @Test
-    void deveConverterItemDomainParaResponse(){
+    void should_ReturnItemResponse_when_ConvertFromItemDomain(){
         OrderItemResponseDTO dto = mapper.itemDomainToResponse(orderItemDomain);
         assertEquals(itemResponseFixture, dto);
     }
 
     @Test
-    void deveConverterDomainParaResponse(){
+    void should_ReturnResponse_when_ConvertFromDomain(){
         OrderResponseDTO dto = mapper.domainToResponse(orderDomain);
         assertEquals(orderResponseFixture, dto);
     }
 
     @Test
-    void deveConverterDomainParaEntity(){
+    void should_ReturnEntity_when_ConvertFromDomain(){
         OrderEntity entity = mapper.domainToEntity(orderDomain);
         assertEquals(orderEntityFromDomainFixture, entity);
     }

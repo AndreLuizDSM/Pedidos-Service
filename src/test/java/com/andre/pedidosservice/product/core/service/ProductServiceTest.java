@@ -42,7 +42,7 @@ class ProductServiceTest {
                         // createProduct
 
     @Test
-    void createProduct_success() {
+    void should_CreateProduct_when_DataIsValid() {
         when(repository.save(productDomain)).thenReturn(productDomain);
 
         ProductDomain result = productService.createProduct(productDomain);
@@ -57,7 +57,7 @@ class ProductServiceTest {
                         // getProductById
 
     @Test
-    void getProductById_success() {
+    void should_ReturnProduct_when_IdExists() {
         when(repository.findById("p1")).thenReturn(Optional.of(productDomain));
 
         ProductDomain result = productService.getProductById("p1");
@@ -70,7 +70,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void getProductById_naoEncontrado_lancaResourceNotFoundException() {
+    void should_ThrowResourceNotFoundException_when_ProductNotFound() {
         when(repository.findById("p1")).thenReturn(Optional.empty());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class,
@@ -86,7 +86,7 @@ class ProductServiceTest {
                         // getAllProducts
 
     @Test
-    void getAllProducts_success() {
+    void should_ReturnAllProducts_when_ProductsExist() {
         when(repository.findAll()).thenReturn(List.of(productDomain, new ProductDomain("p2", 5.0, "Pão", 50)));
 
         List<ProductDomain> result = productService.getAllProducts();
@@ -100,7 +100,7 @@ class ProductServiceTest {
                         // updateProduct
 
     @Test
-    void updateProduct_success() {
+    void should_UpdateProduct_when_DataIsValid() {
         ProductDomain novosDados = new ProductDomain("p1", 20.0, "Café Premium", 80);
         when(repository.findById("p1")).thenReturn(Optional.of(productDomain));
         when(repository.save(productDomain)).thenReturn(productDomain);
@@ -119,7 +119,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void updateProduct_naoEncontrado_lancaResourceNotFoundException() {
+    void should_ThrowResourceNotFoundException_when_ProductNotFoundOnUpdate() {
         when(repository.findById("p1")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
@@ -132,7 +132,7 @@ class ProductServiceTest {
                         // deleteProduct
 
     @Test
-    void deleteProduct_success() {
+    void should_DeleteProduct_when_IdExists() {
         when(repository.findById("p1")).thenReturn(Optional.of(productDomain));
 
         productService.deleteProduct("p1");
@@ -143,7 +143,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void deleteProduct_naoEncontrado_lancaResourceNotFoundException() {
+    void should_ThrowResourceNotFoundException_when_ProductNotFoundOnDelete() {
         when(repository.findById("p1")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> productService.deleteProduct("p1"));

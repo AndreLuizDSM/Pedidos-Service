@@ -33,20 +33,20 @@ public class ProductMapperTest {
     }
 
     @Test
-    void deveConverterDomainParaEntity(){
+    void should_ReturnEntity_when_ConvertFromDomain(){
         ProductEntity entity = mapper.domainToEntity(productDomain);
 
         assertEquals(productEntity, entity);
     }
 
     @Test
-    void deveConverterDomainParaResponse(){
+    void should_ReturnResponse_when_ConvertFromDomain(){
         ProductResponseDTO dto = mapper.domainToResponse(productDomain);
         assertEquals(productResponseFixture, dto);
     }
 
     @Test
-    void deveConverterRequestParaDomain(){
+    void should_ReturnDomain_when_ConvertFromRequest(){
         ProductDomain domain = mapper.requestToDomain(productRequest);
 
         // request não traz id, então uso o construtor sem id (id fica null nos dois lados)
@@ -57,7 +57,7 @@ public class ProductMapperTest {
     }
 
     @Test
-    void deveConverterEntityParaDomain(){
+    void should_ReturnDomain_when_ConvertFromEntity(){
         ProductDomain domain = mapper.entityToDomain(productEntity);
 
         // request não traz id, então uso o construtor sem id (id fica null nos dois lados)

@@ -46,12 +46,12 @@ public class JwtRequestFilterTest {
 
     // Limpa o contexto de segurança entre os testes para não vazar autenticação de um teste para outro
     @AfterEach
-    void limparContexto() {
+    void clearContext() {
         SecurityContextHolder.clearContext();
     }
 
     @Test
-    void semHeaderAuthorization_naoAutentica_eSegueACadeia() throws Exception {
+    void should_NotAuthenticateAndContinueChain_when_NoAuthorizationHeader() throws Exception {
         when(request.getHeader("Authorization")).thenReturn(null);
 
         filter.doFilterInternal(request, response, chain);
@@ -61,7 +61,7 @@ public class JwtRequestFilterTest {
     }
 
     @Test
-    void tokenValido_autentica_eSegueACadeia() throws Exception {
+    void should_AuthenticateAndContinueChain_when_TokenIsValid() throws Exception {
         UserDetails userDetails = User.withUsername("user-1")
                 .password("senha123").authorities("CLIENT").build();
 
@@ -78,7 +78,7 @@ public class JwtRequestFilterTest {
     }
 
     @Test
-    void tokenInvalido_retorna401_eNaoSegueACadeia() throws Exception {
+    void should_Return401AndNotContinueChain_when_TokenIsInvalid() throws Exception {
         when(request.getHeader("Authorization")).thenReturn("Bearer token-invalido");
         when(jwtUtil.extrairSubjectUUIDToken("token-invalido"))
                 .thenThrow(new MalformedJwtException("token ruim"));

@@ -28,32 +28,32 @@ public class JwtUtilTest {
     }
 
     @Test
-    void deveExtrairSubjectDoToken(){
+    void should_ReturnSubject_when_ExtractFromToken(){
         assertThat(jwtUtil.extrairSubjectUUIDToken(token), is("user-1"));
     }
 
     @Test
-    void deveExtrairStatusDoToken(){
+    void should_ReturnStatus_when_ExtractFromToken(){
         assertThat(jwtUtil.extrairSTATUSToken(token), is("CLIENT"));
     }
 
     @Test
-    void deveValidarTokenComIdCorreto(){
+    void should_ReturnTrue_when_TokenHasCorrectId(){
         assertTrue(jwtUtil.validateToken(token, "user-1"));
     }
 
     @Test
-    void naoDeveValidarTokenComIdDiferente(){
+    void should_ReturnFalse_when_TokenHasDifferentId(){
         assertFalse(jwtUtil.validateToken(token, "outro-id"));
     }
 
     @Test
-    void tokenRecemGeradoNaoDeveEstarExpirado(){
+    void should_ReturnFalse_when_TokenIsRecentlyGenerated(){
         assertFalse(jwtUtil.isTokenExpired(token));
     }
 
     @Test
-    void deveLancarExcecaoParaTokenMalformado(){
+    void should_ThrowException_when_TokenIsMalformed(){
         assertThrows(MalformedJwtException.class,
                 () -> jwtUtil.extractClaims("token-invalido"));
     }

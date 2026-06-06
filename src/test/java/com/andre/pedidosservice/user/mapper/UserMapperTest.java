@@ -39,25 +39,22 @@ public class UserMapperTest {
         userRequest = UserRequestDTOFixture.build("André", "andre@email.com", "senha123");
         userLogin = UserLoginDTOFixture.build("andre@email.com", "senha123");
     }
-    // TODO
-    //    UserDomain loginToDomain (UserLoginDTO dto);
-    //    UserDomain entityToDomain (UserEntity entity);
 
     @Test
-    void deveConverterDomainParaEntity(){
+    void should_ReturnEntity_when_ConvertFromDomain(){
         UserEntity entity = mapper.domainToEntity(userDomain);
 
         assertEquals(userEntity, entity);
     }
 
     @Test
-    void deveConverterDomainParaResponse(){
+    void should_ReturnResponse_when_ConvertFromDomain(){
         UserResponseDTO dto = mapper.domainToResponse(userDomain);
         assertEquals(userResponseFixture, dto);
     }
 
     @Test
-    void deveConverterLoginParaDomain(){
+    void should_ReturnDomain_when_ConvertFromLogin(){
 
         UserDomain domain = mapper.loginToDomain(userLogin);
         // Não devo comparar objetos , mas valores , pois o objeto retornado de login é incompleto.
@@ -70,7 +67,7 @@ public class UserMapperTest {
     }
 
     @Test
-    void deveConverterEntityParaDomain(){
+    void should_ReturnDomain_when_ConvertFromEntity(){
         UserDomain domain = mapper.entityToDomain(userEntity);
         assertEquals(userDomain, domain);
     }

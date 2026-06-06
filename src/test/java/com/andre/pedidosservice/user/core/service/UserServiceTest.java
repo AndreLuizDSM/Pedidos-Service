@@ -46,7 +46,7 @@ class UserServiceTest {
                         // createUser
 
     @Test
-    void createUser_success() {
+    void should_CreateUser_when_DataIsValid() {
         when(repository.existsByEmail("andre@email.com")).thenReturn(false);
         // Na service , eu gero outro objeto com newUser, porém eu não uso esses métodos nos tests,
         // então o uso do "any" resolve o problema de referência de objeto diferente.
@@ -64,7 +64,7 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser_emailDuplicado_lancaInvalidRequestException() {
+    void should_ThrowInvalidRequestException_when_EmailIsDuplicated() {
         when(repository.existsByEmail("andre@email.com")).thenReturn(true);
 
         InvalidRequestException e = assertThrows(InvalidRequestException.class,
@@ -78,7 +78,7 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser_emailInvalido_lancaInvalidRequestException() {
+    void should_ThrowInvalidRequestException_when_EmailIsInvalid() {
         // UserDomain.newUser valida o formato do email ANTES de tocar no repositório
         InvalidRequestException e = assertThrows(InvalidRequestException.class,
                 () -> userService.createUser("André", "email-invalido", "senha123"));
@@ -92,7 +92,7 @@ class UserServiceTest {
                         // getUserById
 
     @Test
-    void getUserById_success() {
+    void should_ReturnUser_when_IdExists() {
         when(repository.findById("123")).thenReturn(Optional.of(userDomain));
 
         UserDomain result = userService.getUserById("123");
@@ -107,7 +107,7 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserById_naoEncontrado_lancaResourceNotFoundException() {
+    void should_ThrowResourceNotFoundException_when_UserNotFound() {
         when(repository.findById("123")).thenReturn(Optional.empty());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class,
@@ -123,7 +123,7 @@ class UserServiceTest {
                         // deleteUser
 
     @Test
-    void deleteUser_success() {
+    void should_DeleteUser_when_IdExists() {
         when(repository.findById("123")).thenReturn(Optional.of(userDomain));
 
         userService.deleteUser("123");
@@ -134,7 +134,7 @@ class UserServiceTest {
     }
 
     @Test
-    void deleteUser_naoEncontrado_lancaResourceNotFoundException() {
+    void should_ThrowResourceNotFoundException_when_UserNotFoundOnDelete() {
         when(repository.findById("123")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.deleteUser("123"));
@@ -146,7 +146,7 @@ class UserServiceTest {
                         // updateUserStatus
 
     @Test
-    void updateUserStatus_success() {
+    void should_UpdateUserStatus_when_DataIsValid() {
         when(repository.updateStatus(anyString(), any(UserStatus.class))).thenReturn(userDomain);
 
         UserDomain result = userService.updateUserStatus("123", UserStatus.ADMIN);

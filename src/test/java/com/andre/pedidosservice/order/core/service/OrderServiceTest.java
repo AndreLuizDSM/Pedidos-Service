@@ -63,7 +63,7 @@ class OrderServiceTest {
                         // createOrder
 
     @Test
-    void createOrder_success() {
+    void should_CreateOrder_when_DataIsValid() {
         when(userRepository.findById("user-1")).thenReturn(Optional.of(userDomain));
         when(repository.save(any(OrderDomain.class), any(UserDomain.class))).thenReturn(orderDomain);
 
@@ -78,7 +78,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_usuarioNaoEncontrado_lancaResourceNotFoundException() {
+    void should_ThrowResourceNotFoundException_when_UserNotFound() {
         when(userRepository.findById("user-1")).thenReturn(Optional.empty());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class,
@@ -94,7 +94,7 @@ class OrderServiceTest {
                         // getOrderById
 
     @Test
-    void getOrderById_success() {
+    void should_ReturnOrder_when_IdExists() {
         when(repository.findById("order-1")).thenReturn(Optional.of(orderDomain));
 
         OrderDomain result = orderService.getOrderById("order-1");
@@ -107,7 +107,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void getOrderById_naoEncontrado_lancaResourceNotFoundException() {
+    void should_ThrowResourceNotFoundException_when_OrderNotFound() {
         when(repository.findById("order-1")).thenReturn(Optional.empty());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class,
@@ -123,7 +123,7 @@ class OrderServiceTest {
                         // addOrderItem
 
     @Test
-    void addOrderItem_success() {
+    void should_AddOrderItem_when_DataIsValid() {
         when(repository.findById("order-1")).thenReturn(Optional.of(orderDomain));
         when(productRepository.findById("prod-1"))
                 .thenReturn(Optional.of(new ProductDomain("prod-1", 10.0, "Café", 100)));
@@ -141,7 +141,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void addOrderItem_pedidoNaoPendente_lancaInvalidRequestException() {
+    void should_ThrowInvalidRequestException_when_OrderIsNotPending() {
         orderDomain.setStatus(OrderStatus.CONFIRMADO);
         when(repository.findById("order-1")).thenReturn(Optional.of(orderDomain));
 
@@ -156,7 +156,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void addOrderItem_estoqueInsuficiente_lancaInvalidRequestException() {
+    void should_ThrowInvalidRequestException_when_StockIsInsufficient() {
         when(repository.findById("order-1")).thenReturn(Optional.of(orderDomain));
         when(productRepository.findById("prod-1"))
                 .thenReturn(Optional.of(new ProductDomain("prod-1", 10.0, "Café", 2)));
@@ -175,7 +175,7 @@ class OrderServiceTest {
                         // updateOrderStatus
 
     @Test
-    void updateOrderStatus_success() {
+    void should_UpdateOrderStatus_when_DataIsValid() {
         when(repository.findById("order-1")).thenReturn(Optional.of(orderDomain));
         when(repository.updateStatus("order-1", OrderStatus.CONFIRMADO)).thenReturn(orderDomain);
 
@@ -191,7 +191,7 @@ class OrderServiceTest {
                         // deleteOrder
 
     @Test
-    void deleteOrder_success() {
+    void should_DeleteOrder_when_IdExists() {
         when(repository.findById("order-1")).thenReturn(Optional.of(orderDomain));
 
         orderService.deleteOrder("order-1");
@@ -202,7 +202,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void deleteOrder_naoEncontrado_lancaResourceNotFoundException() {
+    void should_ThrowResourceNotFoundException_when_OrderNotFoundOnDelete() {
         when(repository.findById("order-1")).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> orderService.deleteOrder("order-1"));
@@ -214,7 +214,7 @@ class OrderServiceTest {
                         // getOrdersByUserId
 
     @Test
-    void getOrdersByUserId_success() {
+    void should_ReturnOrders_when_UserIdExists() {
         when(repository.findByUserId("user-1")).thenReturn(List.of(new OrderDomain(), new OrderDomain()));
 
         List<OrderDomain> result = orderService.getOrdersByUserId("user-1");
