@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OrderResponseDTOFixture {
 
-    public OrderResponseDTO build(String id,
+    public static OrderResponseDTO build(String id,
                                   LocalDateTime createdAt,
                                   LocalDateTime updatedAt,
                                   LocalDateTime expiresAt,

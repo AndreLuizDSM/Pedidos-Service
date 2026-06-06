@@ -1,5 +1,7 @@
 package com.andre.pedidosservice.product.core.domain;
 
+import java.util.Objects;
+
 public class ProductDomain {
 
     private String id;
@@ -49,5 +51,26 @@ public class ProductDomain {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ProductDomain that)) return false;
+        return Double.compare(price, that.price) == 0 && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(stock, that.stock);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, price, name, stock);
+    }
+
+    @Override
+    public String toString() {
+        return "ProductDomain{" +
+                "id='" + id + '\'' +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                ", stock=" + stock +
+                '}';
     }
 }

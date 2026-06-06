@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 // Entidade JPA que representa a tabela de produtos no banco de dados
 @Getter
 @Setter
@@ -28,4 +30,25 @@ public class ProductEntity {
     // Estoque: controla quantas unidades restam disponíveis para venda
     @Column(name = "stock", nullable = false)
     private Integer stock;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ProductEntity that)) return false;
+        return Double.compare(price, that.price) == 0 && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(stock, that.stock);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, stock);
+    }
+
+    @Override
+    public String toString() {
+        return "ProductEntity{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", stock=" + stock +
+                '}';
+    }
 }

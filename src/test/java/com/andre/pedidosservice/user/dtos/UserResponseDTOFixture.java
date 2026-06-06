@@ -4,7 +4,7 @@ import com.andre.pedidosservice.user.core.UserStatus;
 
 public class UserResponseDTOFixture {
 
-    public UserResponseDTO build(String id,
+    public static UserResponseDTO build(String id,
                                  String name,
                                  String email,
                                  UserStatus status){

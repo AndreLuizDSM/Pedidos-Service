@@ -4,6 +4,8 @@ import com.andre.pedidosservice.product.entities.ProductEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 /*
  * Entidade JPA que representa um item dentro de um pedido.
  * ManyToOne com OrderEntity: um item pertence a um único pedido.
@@ -44,4 +46,15 @@ public class OrderItemEntity {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof OrderItemEntity that)) return false;
+        return Double.compare(price, that.price) == 0 && Objects.equals(id, that.id) && Objects.equals(order, that.order) && Objects.equals(product, that.product) && Objects.equals(productName, that.productName) && Objects.equals(quantity, that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, order, product, productName, price, quantity);
+    }
 }

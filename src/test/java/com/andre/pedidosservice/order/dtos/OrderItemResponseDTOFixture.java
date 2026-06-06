@@ -2,7 +2,7 @@ package com.andre.pedidosservice.order.dtos;
 
 public class OrderItemResponseDTOFixture {
 
-    public OrderItemResponseDTO build(String id,
+    public static OrderItemResponseDTO build(String id,
                                       String productId,
                                       String productName,
                                       double price,
