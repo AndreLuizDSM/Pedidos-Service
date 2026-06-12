@@ -47,16 +47,22 @@ public class OrderMapperTest {
     public void setup() {
         mapper = Mappers.getMapper(OrderMapper.class);
 
+        // reaproveitamento
         now = LocalDateTime.now();
 
+        // Será aderido ao orderItemEntity , essa propriedade não existe no orderItemDomain
         productEntity = new ProductEntity("p1", "Teclado", 150.0, 10);
+        // Será aderido ao orderEntity, essa propriedade não existe no orderDomain
         userEntity = UserEntity.builder().id("u1").build();
 
+        // Entities
         // order = null para evitar a referência bidirecional OrderEntity ↔ OrderItemEntity
         orderItemEntity = new OrderItemEntity("i1", null, productEntity, "Teclado", 150.0, 2);
         orderEntity = new OrderEntity("o1", now, now, now, 300.0, OrderStatus.PENDENTE,
                 userEntity, List.of(orderItemEntity));
 
+
+        // Domains
         orderItemDomain = new OrderItemDomain("p1", 2);
         orderItemDomain.setId("i1");
         orderItemDomain.setProductName("Teclado");
@@ -72,23 +78,8 @@ public class OrderMapperTest {
         orderDomain.setUserId("u1");
         orderDomain.setOrderItems(List.of(orderItemDomain));
 
+        // DTOS - REQUESTS E RESPONSES
         orderItemRequest = OrderItemRequestDTOFixture.build("p1", 2);
-
-        // itemEntityToDomain: productId vem de product.id; productPrice não é mapeado (fica 0.0)
-        itemDomainFromEntityFixture = new OrderItemDomain("p1", 2);
-        itemDomainFromEntityFixture.setId("i1");
-        itemDomainFromEntityFixture.setProductName("Teclado");
-
-        // entityToDomain: userId vem de user.id; o item mapeado não recebe productPrice (fica 0.0)
-        orderDomainFromEntityFixture = new OrderDomain();
-        orderDomainFromEntityFixture.setId("o1");
-        orderDomainFromEntityFixture.setCreatedAt(now);
-        orderDomainFromEntityFixture.setUpdatedAt(now);
-        orderDomainFromEntityFixture.setExpiresAt(now);
-        orderDomainFromEntityFixture.setTotalAmount(300.0);
-        orderDomainFromEntityFixture.setStatus(OrderStatus.PENDENTE);
-        orderDomainFromEntityFixture.setUserId("u1");
-        orderDomainFromEntityFixture.setOrderItems(List.of(itemDomainFromEntityFixture));
 
         // requestToItemDomain: só productId e quantity são mapeados; o resto fica no default
         itemDomainFromRequestFixture = new OrderItemDomain("p1", 2);
@@ -101,8 +92,9 @@ public class OrderMapperTest {
         orderResponseFixture = OrderResponseDTOFixture.build("o1", now, now, now,
                 300.0, OrderStatus.PENDENTE, "u1", null);
 
-        // domainToEntity: user não é mapeado (null); no item, order/product/price não são mapeados (price 0.0)
-        OrderItemEntity itemEntityFromDomain = new OrderItemEntity("i1", null, null, "Teclado", 0.0, 2);
+        // User no OrderEntity não é mapeado pelo mapstruct , o user é injetado manualmente no método da service
+        // product fica null: o mapper só tem productId (String), não consegue reconstruir a ProductEntity completo
+        OrderItemEntity itemEntityFromDomain = new OrderItemEntity("i1", null, null, "Teclado", 150.0, 2);
         orderEntityFromDomainFixture = new OrderEntity("o1", now, now, now, 300.0, OrderStatus.PENDENTE,
                 null, List.of(itemEntityFromDomain));
     }
@@ -110,13 +102,13 @@ public class OrderMapperTest {
     @Test
     void should_ReturnItemDomain_when_ConvertFromItemEntity(){
         OrderItemDomain domain = mapper.itemEntityToDomain(orderItemEntity);
-        assertEquals(itemDomainFromEntityFixture, domain);
+        assertEquals(orderItemDomain, domain);
     }
 
     @Test
     void should_ReturnDomain_when_ConvertFromEntity(){
         OrderDomain domain = mapper.entityToDomain(orderEntity);
-        assertEquals(orderDomainFromEntityFixture, domain);
+        assertEquals(orderDomain, domain);
     }
 
     @Test

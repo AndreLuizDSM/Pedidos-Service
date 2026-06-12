@@ -56,7 +56,9 @@ public class JwtRequestFilterTest {
 
         filter.doFilterInternal(request, response, chain);
 
+        // Verifica que não foi passado token
         assertThat(SecurityContextHolder.getContext().getAuthentication(), is(nullValue()));
+        // Verifica se o chain fez o .doFilter
         verify(chain).doFilter(request, response);
     }
 
@@ -65,21 +67,29 @@ public class JwtRequestFilterTest {
         UserDetails userDetails = User.withUsername("user-1")
                 .password("senha123").authorities("CLIENT").build();
 
+        // Cria um token para ser injetado no SecurityContextHolder
         when(request.getHeader("Authorization")).thenReturn("Bearer token-valido");
+        // Aplica todos os métodos para validar o TOKEN
         when(jwtUtil.extrairSubjectUUIDToken("token-valido")).thenReturn("user-1");
         when(userDetailsService.loadUserByUsername("user-1")).thenReturn(userDetails);
         when(jwtUtil.validateToken("token-valido", "user-1")).thenReturn(true);
 
+        // Chama o método do filtro
         filter.doFilterInternal(request, response, chain);
 
+        // Verifica que o token não é NULL e o seu valor
         assertThat(SecurityContextHolder.getContext().getAuthentication(), notNullValue());
         assertThat(SecurityContextHolder.getContext().getAuthentication().getName(), is("user-1"));
+        // Verifica o filtro
         verify(chain).doFilter(request, response);
+
     }
 
     @Test
     void should_Return401AndNotContinueChain_when_TokenIsInvalid() throws Exception {
+        // Cria um token inválido
         when(request.getHeader("Authorization")).thenReturn("Bearer token-invalido");
+        // Throw erro do token inválido
         when(jwtUtil.extrairSubjectUUIDToken("token-invalido"))
                 .thenThrow(new MalformedJwtException("token ruim"));
         when(request.getRequestURI()).thenReturn("/orders");
@@ -87,8 +97,9 @@ public class JwtRequestFilterTest {
         when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
 
         filter.doFilterInternal(request, response, chain);
-
+        // Verifica que não ouve token
         assertThat(SecurityContextHolder.getContext().getAuthentication(), is(nullValue()));
+        // Verifica o status response
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(chain, never()).doFilter(request, response);
     }
