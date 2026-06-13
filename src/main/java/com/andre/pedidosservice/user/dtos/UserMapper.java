@@ -9,7 +9,6 @@ public interface UserMapper {
 
     UserEntity domainToEntity (UserDomain dto);
     UserResponseDTO domainToResponse (UserDomain domain);
-    UserDomain requestToDomain (UserRequestDTO dto);
     UserDomain loginToDomain (UserLoginDTO dto);
     UserDomain entityToDomain (UserEntity entity);
 

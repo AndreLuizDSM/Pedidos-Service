@@ -33,8 +33,7 @@ class OrderExpirationServiceTest {
     }
 
     @Test
-    @DisplayName("expireOrders deve marcar cada pedido expirado como EXPIRADO")
-    void expireOrders_marcaCadaPedidoComoExpirado() {
+    void should_MarkEachOrderAsExpired_when_ExpireOrders() {
         when(repository.findExpiredOrders())
                 .thenReturn(List.of(orderWithId("1"), orderWithId("2")));
 
@@ -45,8 +44,7 @@ class OrderExpirationServiceTest {
     }
 
     @Test
-    @DisplayName("expireOrders não deve atualizar status quando não houver pedidos expirados")
-    void expireOrders_semPedidos_naoAtualizaNada() {
+    void should_NotUpdateAnything_when_NoOrders() {
         when(repository.findExpiredOrders()).thenReturn(List.of());
 
         service.expireOrders();
@@ -55,8 +53,7 @@ class OrderExpirationServiceTest {
     }
 
     @Test
-    @DisplayName("deleteExpiredOrders deve deletar pedidos pelo status EXPIRADO")
-    void deleteExpiredOrders_deletaPeloStatusExpirado() {
+    void should_DeleteOrders_when_StatusIsExpired() {
         service.deleteExpiredOrders();
 
         verify(repository).deleteByStatus(OrderStatus.EXPIRADO);

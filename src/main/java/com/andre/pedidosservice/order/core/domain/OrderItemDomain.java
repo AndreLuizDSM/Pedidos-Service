@@ -1,5 +1,7 @@
 package com.andre.pedidosservice.order.core.domain;
 
+import java.util.Objects;
+
 /*
  * Domínio de um item dentro de um pedido.
  * Representa um produto específico adicionado ao pedido, com snapshot de preço e nome
@@ -66,5 +68,27 @@ public class OrderItemDomain {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof OrderItemDomain that)) return false;
+        return Double.compare(productPrice, that.productPrice) == 0 && Objects.equals(id, that.id) && Objects.equals(productId, that.productId) && Objects.equals(productName, that.productName) && Objects.equals(quantity, that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, productId, productName, productPrice, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderItemDomain{" +
+                "id='" + id + '\'' +
+                ", productId='" + productId + '\'' +
+                ", productName='" + productName + '\'' +
+                ", productPrice=" + productPrice +
+                ", quantity=" + quantity +
+                '}';
     }
 }

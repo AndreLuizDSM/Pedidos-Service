@@ -79,7 +79,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
             itemEntity.setOrder(orderEntity);
             itemEntity.setProduct(product);
             itemEntity.setProductName(itemDomain.getProductName());
-            itemEntity.setPrice(itemDomain.getProductPrice());
+            itemEntity.setProductPrice(itemDomain.getProductPrice());
             itemEntity.setQuantity(itemDomain.getQuantity());
             orderEntity.getOrderItems().add(itemEntity);
 
