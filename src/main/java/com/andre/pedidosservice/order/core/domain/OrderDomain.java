@@ -5,6 +5,7 @@ import com.andre.pedidosservice.order.core.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /*
  * Domínio de pedido.
@@ -110,5 +111,30 @@ public class OrderDomain {
 
     public void setExpiresAt(LocalDateTime expiresAt) {
         this.expiresAt = expiresAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof OrderDomain that)) return false;
+        return Double.compare(totalAmount, that.totalAmount) == 0 && Objects.equals(id, that.id) && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt) && Objects.equals(expiresAt, that.expiresAt) && status == that.status && Objects.equals(userId, that.userId) && Objects.equals(orderItems, that.orderItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdAt, updatedAt, expiresAt, totalAmount, status, userId, orderItems);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDomain{" +
+                "id='" + id + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", expiresAt=" + expiresAt +
+                ", totalAmount=" + totalAmount +
+                ", status=" + status +
+                ", userId='" + userId + '\'' +
+                ", orderItems=" + orderItems +
+                '}';
     }
 }

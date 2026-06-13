@@ -7,6 +7,7 @@ import com.andre.pedidosservice.user.core.UserStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserDomain {
 
@@ -100,5 +101,28 @@ public class UserDomain {
 
     public void setOrder(List<OrderDomain> order) {
         this.order = order;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof UserDomain that)) return false;
+        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(id, that.id) && status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, email, password, id, status);
+    }
+
+    @Override
+    public String toString() {
+        return "UserDomain{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", id='" + id + '\'' +
+                ", status=" + status +
+                ", order=" + order +
+                '}';
     }
 }

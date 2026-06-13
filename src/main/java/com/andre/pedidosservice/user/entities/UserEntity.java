@@ -8,11 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "table_user")
 public class UserEntity implements UserDetails {
@@ -46,4 +48,14 @@ public class UserEntity implements UserDetails {
     public String getUsername() { return id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof UserEntity that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, password, status);
+    }
 }

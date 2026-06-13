@@ -5,7 +5,7 @@ public record OrderItemResponseDTO(
         String id,
         String productId,
         String productName,
-        double price,
+        double productPrice,
         Integer quantity,
         double subtotal
 ) {}

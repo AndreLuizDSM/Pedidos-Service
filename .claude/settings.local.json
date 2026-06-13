@@ -8,7 +8,10 @@
       "Bash(Sort-Object)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\INFOMAIS INFORMATICA\\\\Desktop\\\\Meu-Projeto\\\\pedidosservice\" -Recurse -Directory)",
       "Bash(Select-Object -First 30)",
-      "Bash(grep -iA1 -E \"mockito|junit|spring-boot-starter-test\")"
+      "Bash(grep -iA1 -E \"mockito|junit|spring-boot-starter-test\")",
+      "Bash(./gradlew test *)",
+      "PowerShell(.\\\\gradlew.bat test --tests \"com.andre.pedidosservice.user.adapters.in.UserControllerTest\" --tests \"com.andre.pedidosservice.user.adapters.out.UserRepositoryAdapterTest\" --tests \"com.andre.pedidosservice.user.core.service.UserAuthenticationTest\" --console=plain)",
+      "PowerShell(.\\\\gradlew.bat test --tests \"com.andre.pedidosservice.user.adapters.in.UserControllerTest\" --console=plain)"
     ]
   }
 }
