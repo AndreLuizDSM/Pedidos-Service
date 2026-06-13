@@ -67,7 +67,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveCriarUsuarioComSucesso() throws Exception {
+    void should_CreateUser_when_DataIsValid() throws Exception {
         when(serviceGateway.createUser("André", "andre@gmail.com", "senha123")).thenReturn(userDomain);
         when(mapper.domainToResponse(userDomain)).thenReturn(userResponseDTO);
         // Faz o teste em um http
@@ -83,7 +83,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void naoDeveCriarUsuarioSeJsonNull() throws Exception {
+    void should_ReturnBadRequest_when_CreateUserJsonIsNull() throws Exception {
 
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -94,7 +94,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveRealizarLoginComSucesso() throws Exception {
+    void should_ReturnToken_when_LoginIsValid() throws Exception {
         when(mapper.loginToDomain(userLoginDTO)).thenReturn(userDomain);
         when(authentication.login(userDomain)).thenReturn("Bearer token-valido");
 
@@ -110,7 +110,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void naoDeveRealizarLoginSeJsonNull() throws Exception {
+    void should_ReturnBadRequest_when_LoginJsonIsNull() throws Exception {
         mockMvc.perform(post(url + "/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -120,7 +120,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveAtualizarStatusDoUsuarioComSucesso() throws Exception {
+    void should_UpdateUserStatus_when_DataIsValid() throws Exception {
         when(serviceGateway.updateUserStatus(id, UserStatus.ADMIN)).thenReturn(userDomain);
         when(mapper.domainToResponse(userDomain)).thenReturn(userResponseDTO);
 
@@ -136,7 +136,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveBuscarOsDadosDeUsuarioPorIdComSucesso() throws Exception {
+    void should_ReturnUser_when_IdExists() throws Exception {
         when(serviceGateway.getUserById(id)).thenReturn(userDomain);
         when(mapper.domainToResponse(userDomain)).thenReturn(userResponseDTO);
 
@@ -151,7 +151,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveDeletarOUsuarioComSucesso() throws Exception {
+    void should_DeleteUser_when_IdExists() throws Exception {
         mockMvc.perform(delete(url + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)

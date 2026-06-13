@@ -85,7 +85,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void deveCriarPedidoComSucesso() throws Exception {
+    void should_CreateOrder_when_DataIsValid() throws Exception {
         // Simula o usuário autenticado que o controller extrai do contexto de segurança
         Authentication auth = new UsernamePasswordAuthenticationToken(userId, null);
         SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -106,7 +106,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void deveAdicionarItemAoPedidoComSucesso() throws Exception {
+    void should_AddOrderItem_when_DataIsValid() throws Exception {
         when(mapper.requestToItemDomain(any())).thenReturn(orderItemDomain);
         when(service.addOrderItem(eq(id), anyList())).thenReturn(orderDomain);
         when(mapper.domainToResponse(orderDomain)).thenReturn(orderResponseDTO);
@@ -123,7 +123,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void naoDeveAdicionarItemSeJsonNull() throws Exception {
+    void should_ReturnBadRequest_when_AddItemJsonIsNull() throws Exception {
         // sem .content
         mockMvc.perform(post(url + "/{id}/items", id)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -134,7 +134,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void deveDeletarItemDoPedidoComSucesso() throws Exception {
+    void should_DeleteOrderItem_when_DataIsValid() throws Exception {
         // quando deleta um item , retorna o pedido
         when(service.deleteOrderItem(id, "item-1")).thenReturn(orderDomain);
         when(mapper.domainToResponse(orderDomain)).thenReturn(orderResponseDTO);
@@ -150,7 +150,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void deveAtualizarStatusDoPedidoComSucesso() throws Exception {
+    void should_UpdateOrderStatus_when_DataIsValid() throws Exception {
         when(service.updateOrderStatus(id, OrderStatus.CONFIRMADO)).thenReturn(orderDomain);
         when(mapper.domainToResponse(orderDomain)).thenReturn(orderResponseDTO);
 
@@ -167,7 +167,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void deveBuscarPedidoPorIdComSucesso() throws Exception {
+    void should_ReturnOrder_when_IdExists() throws Exception {
         when(service.getOrderById(id)).thenReturn(orderDomain);
         when(mapper.domainToResponse(orderDomain)).thenReturn(orderResponseDTO);
 
@@ -182,7 +182,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void deveDeletarPedidoComSucesso() throws Exception {
+    void should_DeleteOrder_when_IdExists() throws Exception {
         mockMvc.perform(delete(url + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
