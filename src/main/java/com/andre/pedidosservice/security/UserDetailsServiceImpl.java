@@ -19,10 +19,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     // Implementação do método para carregar detalhes do usuário pelo UUID ID
     @Override
-    public UserDetails loadUserByUsername(String UUID) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String uuid) throws UsernameNotFoundException {
         // Busca o usuário no banco de dados pelo e-mail
-        UserEntity usuario = jpaRepository.findById(UUID)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + UUID));
+        UserEntity usuario = jpaRepository.findById(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + uuid));
 
         // Cria e retorna um objeto UserDetails com base no usuário encontrado
         return org.springframework.security.core.userdetails.User

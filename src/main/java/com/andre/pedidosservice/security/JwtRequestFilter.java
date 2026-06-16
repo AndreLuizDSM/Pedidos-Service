@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.security.SignatureException;
 import java.time.LocalDateTime;
 
 // Intercepta cada request feito lendo o token passado pelo HEADER e faz a autenticação
@@ -93,17 +92,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 .erro(erro)
                 .build();
 
-        /*
-            Transformar objeto em String, HttpResponse.write só escreve Strings;
-            Em java antigo, writeValueAsString precisa de um try/catch
-            Em java antigo, ObjectMapper não consegue transformar LocalDateTime em String, precisa ser manualmente
-         */
+    //    Transformar objeto em String, HttpResponse.write só escreve Strings
+    //    Em java antigo, writeValueAsString precisa de um try/catch
+    //    Em java antigo, ObjectMapper não consegue transformar LocalDateTime em String, precisa ser manualmente
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        // Serializar o LocalDateTime.now , transformar de um objeto {"year": 2026, "month": 5} para uma string.
+    // Serializar o LocalDateTime.now , transformar de um objeto {"year": 2026, "month": 5} para uma string.
 
         return objectMapper.writeValueAsString(errorResponseDTO);
-
     }
 }
