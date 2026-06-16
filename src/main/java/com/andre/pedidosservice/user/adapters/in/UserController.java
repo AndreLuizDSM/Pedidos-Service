@@ -48,7 +48,6 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") String id) {
         serviceGateway.deleteUser(id);
-        System.out.println(id);
         return ResponseEntity.ok().build();
 
     }

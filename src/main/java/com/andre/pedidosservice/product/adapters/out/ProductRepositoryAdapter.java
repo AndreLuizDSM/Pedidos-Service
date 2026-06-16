@@ -40,7 +40,7 @@ public class ProductRepositoryAdapter implements ProductRepositoryGateway {
         return jpaRepository.findAll()
                 .stream()
                 .map(mapper::entityToDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

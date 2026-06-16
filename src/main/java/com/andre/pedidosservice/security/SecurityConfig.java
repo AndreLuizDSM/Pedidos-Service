@@ -1,14 +1,10 @@
 package com.andre.pedidosservice.security;
 
-import com.andre.pedidosservice.exception.exceptions.ErrorResponseDTO;
 import com.andre.pedidosservice.user.core.UserStatus;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +24,8 @@ public class SecurityConfig {
     // Instâncias de JwtUtil e UserDetailsService injetadas pelo Spring
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+
+    private final String authorities = "ADMIN";
 
 
     // Construtor para injeção de dependências de JwtUtil e UserDetailsService
@@ -56,9 +54,9 @@ public class SecurityConfig {
                         // que comece com /user/
 
                         // Somente ADMIN pode criar, atualizar e deletar produtos do catálogo
-                        .requestMatchers(HttpMethod.POST, "/product").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/product/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/product").hasAuthority(authorities)
+                        .requestMatchers(HttpMethod.PUT, "/product/**").hasAuthority(authorities)
+                        .requestMatchers(HttpMethod.DELETE, "/product/**").hasAuthority(authorities)
 
                         .anyRequest().authenticated() // Requer autenticação para todas as outras requisições
                 )

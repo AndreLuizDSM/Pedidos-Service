@@ -17,7 +17,7 @@ public class JwtUtil {
 
     // Chave secreta usada para assinar e verificar tokens JWT
 
-    private final static String SECRETKEY = "YXNzaW5hdHVyYS1sb25nYS1wYXJhLWNoYXZlLXRlc3RlLWRvLWNvZGlnbw==";
+    private static final String SECRETKEY = "YXNzaW5hdHVyYS1sb25nYS1wYXJhLWNoYXZlLXRlc3RlLWRvLWNvZGlnbw==";
 
     public SecretKey getSecretKey(){
         byte[] key = Base64.getDecoder().decode(SECRETKEY);
