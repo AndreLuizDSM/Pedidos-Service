@@ -33,6 +33,8 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     private final OrderMapper mapper;
     private final UserMapper userMapper;
 
+    private final String orderNotFound = "Pedido não encontrado ";
+
     @Override
     public Optional<OrderDomain> findById(String id) {
         if (id == null) return Optional.empty();
@@ -58,7 +60,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     @Transactional
     public OrderDomain updateStatus(String orderId, OrderStatus status) {
         OrderEntity entity = orderJpaRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException(orderNotFound));
         entity.setStatus(status);
         entity.setUpdatedAt(LocalDateTime.now());
         return mapper.entityToDomain(orderJpaRepository.save(entity));
@@ -68,7 +70,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     @Transactional
     public OrderDomain saveItems(OrderDomain order, List<OrderItemDomain> preparedItems, double newTotal) {
         OrderEntity orderEntity = orderJpaRepository.findById(order.getId()).orElseThrow(
-                () -> new ResourceNotFoundException("Pedido nao encontrado " + order.getId())
+                () -> new ResourceNotFoundException(orderNotFound + order.getId())
         );
 
         for (OrderItemDomain itemDomain : preparedItems) {
@@ -98,7 +100,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     @Transactional
     public void deleteById(String id) {
         OrderEntity order = orderJpaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException(orderNotFound));
 
         // Loop para cada item que possuia dentro do pedido , fazer o estoque de volta
         for (OrderItemEntity item : order.getOrderItems()) {
@@ -114,7 +116,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     @Transactional
     public void deleteItemById(String orderId, String itemId, double newTotal) {
         OrderEntity order = orderJpaRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException(orderNotFound));
 
         OrderItemEntity item = orderItemJpaRepository.findById(itemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Item não encontrado: " + itemId));
@@ -137,7 +139,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
                 // Recebe a lista , transforma individualmente cada usando map e transforma em lista novamente
                 .stream()
                 .map(mapper::entityToDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // - - - - - - - - - métodos para scheduled - - - - - - - - -
@@ -147,7 +149,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
         return orderJpaRepository.findByStatusAndExpiresAtBefore(OrderStatus.PENDENTE, LocalDateTime.now())
                 .stream()
                 .map(mapper::entityToDomain)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

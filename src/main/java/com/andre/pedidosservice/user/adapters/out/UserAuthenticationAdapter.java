@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import static org.springframework.util.Assert.notNull;
 
 
 // Adapter separado para realizar apenas a authenticação do usuário
@@ -40,10 +39,8 @@ public class UserAuthenticationAdapter implements UserAuthenticationGateway {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(entity.getId(), domain.getPassword())
             );
-            String token = "Bearer " + jwtUtil.generateToken(authentication.getName(), entity.getStatus());
 
-            System.out.println(jwtUtil.extrairSubjectUUIDToken(token.substring(7)));
-            return token;
+            return "Bearer " + jwtUtil.generateToken(authentication.getName(), entity.getStatus());
 
         } catch (BadCredentialsException | UsernameNotFoundException e) {
             throw new UnauthorizedException("Credenciais invalidas");

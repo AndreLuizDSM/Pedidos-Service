@@ -39,7 +39,7 @@ public class ProductController {
         List<ProductResponseDTO> response = service.getAllProducts()
                 .stream()
                 .map(mapper::domainToResponse)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(response);
     }
 

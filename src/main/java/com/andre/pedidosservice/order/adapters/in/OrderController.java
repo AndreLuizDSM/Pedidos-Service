@@ -33,7 +33,7 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> addOrderItem(@PathVariable String id,
                                                          @Valid @RequestBody List<OrderItemRequestDTO> items) {
         return ResponseEntity.ok(mapper.domainToResponse(
-                service.addOrderItem(id, items.stream().map(mapper::requestToItemDomain).collect(Collectors.toList()))));
+                service.addOrderItem(id, items.stream().map(mapper::requestToItemDomain).toList())));
     }
 
     @DeleteMapping("/{idOrder}/items/{idOrderItem}")
