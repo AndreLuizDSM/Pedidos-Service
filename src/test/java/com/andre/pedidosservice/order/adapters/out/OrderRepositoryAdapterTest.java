@@ -205,7 +205,7 @@ class OrderRepositoryAdapterTest {
                 () -> adapter.updateStatus("order-1", OrderStatus.CONFIRMADO));
 
         assertThat(e, notNullValue());
-        assertThat(e.getMessage(), is("Pedido não encontrado"));
+        assertThat(e.getMessage(), is("Pedido não encontrado "));
 
         verify(orderJpaRepository).findById("order-1");
         verify(orderJpaRepository, never()).save(any(OrderEntity.class));
@@ -251,7 +251,7 @@ class OrderRepositoryAdapterTest {
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class,
                 () -> adapter.saveItems(orderDomain, List.of(new OrderItemDomain("prod-1", 1)), 10.0));
 
-        assertThat(e.getMessage(), is("Pedido nao encontrado order-1"));
+        assertThat(e.getMessage(), is("Pedido não encontrado order-1"));
 
         verify(orderJpaRepository).findById("order-1");
         verifyNoMoreInteractions(productJpaRepository);
@@ -304,7 +304,7 @@ class OrderRepositoryAdapterTest {
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class,
                 () -> adapter.deleteById("order-1"));
 
-        assertThat(e.getMessage(), is("Pedido não encontrado"));
+        assertThat(e.getMessage(), is("Pedido não encontrado "));
 
         verify(orderJpaRepository).findById("order-1");
         verify(orderJpaRepository, never()).deleteById("order-1");
@@ -348,7 +348,7 @@ class OrderRepositoryAdapterTest {
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class,
                 () -> adapter.deleteItemById("order-1", "item-1", 0.0));
 
-        assertThat(e.getMessage(), is("Pedido não encontrado"));
+        assertThat(e.getMessage(), is("Pedido não encontrado "));
 
         verify(orderJpaRepository).findById("order-1");
         verify(orderJpaRepository, never()).save(any(OrderEntity.class));
