@@ -53,6 +53,7 @@ sonarqube {
 	properties {
 		property "sonar.projectKey", "pedidosservice"
 		property "sonar.host.url", "http://localhost:9000"
-		property "sonar.login", "sqa_e1c3db5954204a90940b86ac9e89440a3cbb9240"
+		// Token lido de fora do repositorio: propriedade Gradle (sonarToken) ou variavel de ambiente (SONAR_TOKEN)
+		property "sonar.login", project.findProperty("sonarToken") ?: System.getenv("SONAR_TOKEN") ?: ""
 	}
 }
