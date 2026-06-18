@@ -4,6 +4,7 @@ import com.andre.pedidosservice.notification.adapters.config.RabbitMQConfig;
 import com.andre.pedidosservice.notification.dtos.OrderNotificationEvent;
 import com.andre.pedidosservice.order.gateways.out.OrderNotificationGateway;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 // O OrderService não conhece esta classe — ele depende apenas da interface (OrderNotificationGateway)
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderRabbitMQPublisher implements OrderNotificationGateway {
 
     // RabbitTemplate é o componente do Spring que faz a comunicação com o RabbitMQ
@@ -21,6 +23,8 @@ public class OrderRabbitMQPublisher implements OrderNotificationGateway {
     public void notifyOrderCreated(OrderNotificationEvent event) {
         // convertAndSend serializa o evento para JSON e envia ao exchange com a routing key de criação
         // O exchange roteia a mensagem para a fila "queue.order.created" conforme o binding configurado
+        log.info("notify Created: {}" , event);
+        log.info("Teste funcionou");
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 RabbitMQConfig.ROUTING_KEY_CREATED,
@@ -32,6 +36,8 @@ public class OrderRabbitMQPublisher implements OrderNotificationGateway {
     public void notifyOrderFinished(OrderNotificationEvent event) {
         // Mesmo fluxo, mas com a routing key de finalização
         // O exchange roteia para "queue.order.finished"
+        log.info("notify Finished: {}" , event);
+        log.info("Teste funcionou");
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 RabbitMQConfig.ROUTING_KEY_FINISHED,

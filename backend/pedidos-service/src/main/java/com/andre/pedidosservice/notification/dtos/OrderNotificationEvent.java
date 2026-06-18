@@ -1,6 +1,7 @@
 package com.andre.pedidosservice.notification.dtos;
 
 import com.andre.pedidosservice.order.core.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -25,5 +26,6 @@ public class OrderNotificationEvent {
     private double totalAmount;
 
     // Momento exato em que o evento ocorreu
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime occurredAt;
 }
