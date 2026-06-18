@@ -48,5 +48,11 @@ public class OrderRabbitMQConsumer {
         log.info("Consume Finished");
         log.info("Prioridade {}" , message.getMessageProperties().getPriority());
         log.info("Evento: {}", event);
+
+        try {
+            mailSenderService.sendOrderFinished(event);
+        } catch (RuntimeException e) {
+            log.error("Falha ao enviar e-mail de finalização para o pedido {}", event.getOrderId(), e);
+        }
     }
 }

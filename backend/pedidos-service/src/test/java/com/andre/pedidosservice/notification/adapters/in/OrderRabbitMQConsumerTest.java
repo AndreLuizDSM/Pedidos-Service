@@ -74,5 +74,17 @@ public class OrderRabbitMQConsumerTest {
         rabbitMQConsumer.consumeFinishedMessage(message, eventDto);
 
         verify(message, times(1)).getMessageProperties();
+        verify(mailSenderService, times(1)).sendOrderFinished(eventDto);
+    }
+
+    @Test
+    public void should_NotPropagateException_when_MailSenderFails_OnFinished(){
+
+        doThrow(new RuntimeException("Falha no SMTP")).when(mailSenderService).sendOrderFinished(eventDto);
+
+        // Não deve lançar: a falha no e-mail é só logada, não pode travar o listener
+        rabbitMQConsumer.consumeFinishedMessage(message, eventDto);
+
+        verify(mailSenderService, times(1)).sendOrderFinished(eventDto);
     }
 }

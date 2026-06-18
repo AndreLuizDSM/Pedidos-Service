@@ -65,4 +65,35 @@ public class MailSenderAdapter implements MailSenderServiceGateway {
             throw new EmailException("Erro ao enviar email ", e);
         }
     }
+
+    @Override
+    public void sendMailOrderFinished(OrderNotificationEvent event) {
+        try {
+
+            UserDomain user = userRepository.findById(event.getUserId()).orElseThrow(
+                    ()-> new ResourceNotFoundException("Usuario não encontrado " + event.getUserId()));
+
+            MimeMessage mensagem = javaMailSender.createMimeMessage();
+
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mensagem, true,
+                    StandardCharsets.UTF_8.name());
+            mimeMessageHelper.setFrom(new InternetAddress(remetente, nomeRemetente));
+            mimeMessageHelper.setTo(InternetAddress.parse(user.getEmail()));
+            mimeMessageHelper.setSubject("Pedido finalizado");
+
+
+            Context context = new Context();
+            context.setVariable("nameClient", user.getName());
+            context.setVariable("orderId", event.getOrderId());
+            context.setVariable("status", event.getStatus());
+            context.setVariable("totalAmount", event.getTotalAmount());
+            context.setVariable("dataEvento", event.getOccurredAt());
+            String template = templateEngine.process("orderfinished", context);
+            mimeMessageHelper.setText(template, true);
+            javaMailSender.send(mensagem);
+
+        } catch ( UnsupportedEncodingException | jakarta.mail.MessagingException e){
+            throw new EmailException("Erro ao enviar email ", e);
+        }
+    }
 }

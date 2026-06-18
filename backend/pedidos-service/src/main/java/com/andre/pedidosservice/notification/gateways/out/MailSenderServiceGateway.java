@@ -6,4 +6,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 public interface MailSenderServiceGateway {
 
     void sendMailOrderCreated(OrderNotificationEvent event);
+
+    void sendMailOrderFinished(OrderNotificationEvent event);
 }

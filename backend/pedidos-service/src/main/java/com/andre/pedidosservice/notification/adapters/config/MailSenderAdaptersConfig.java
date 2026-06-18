@@ -14,8 +14,7 @@ public class MailSenderAdaptersConfig {
     // (spring-boot-starter-mail / spring-boot-starter-thymeleaf). O MailSenderServiceGateway
     // é resolvido automaticamente como o MailSenderAdapter, único @Service que implementa essa porta
     @Bean
-    public MailSenderService mailSenderService(JavaMailSender javaMailSender, TemplateEngine templateEngine,
-                                                MailSenderServiceGateway gateway) {
-        return new MailSenderService(javaMailSender, templateEngine, gateway);
+    public MailSenderService mailSenderService(MailSenderServiceGateway gateway) {
+        return new MailSenderService(gateway);
     }
 }
