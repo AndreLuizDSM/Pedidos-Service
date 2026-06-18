@@ -51,8 +51,11 @@ public class MailSenderAdapter implements MailSenderServiceGateway {
 
 
             Context context = new Context();
+            context.setVariable("nameClient", user.getName());
+            context.setVariable("orderId", event.getOrderId());
+            context.setVariable("status", event.getStatus());
             context.setVariable("totalAmount", event.getTotalAmount());
-            context.setVariable("dateNow", LocalDateTime.now());
+            context.setVariable("dataEvento", event.getOccurredAt());
             String template = templateEngine.process("ordercreated", context);
             mimeMessageHelper.setText(template, true);
             javaMailSender.send(mensagem);
