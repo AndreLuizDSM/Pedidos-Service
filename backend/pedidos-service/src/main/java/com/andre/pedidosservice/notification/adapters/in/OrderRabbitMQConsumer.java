@@ -18,8 +18,19 @@ public class OrderRabbitMQConsumer {
     @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConfig.QUEUE_ORDER_CREATED),
     exchange = @Exchange(RabbitMQConfig.EXCHANGE),
     key = RabbitMQConfig.ROUTING_KEY_CREATED))
-    public void processMessage(final Message message, final OrderNotificationEvent event) {
+    public void consumeCreatedMessage(final Message message, final OrderNotificationEvent event) {
 
+        log.info("Consume Created");
+        log.info("Prioridade {}" , message.getMessageProperties().getPriority());
+        log.info("Evento: {}", event);
+    }
+
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConfig.QUEUE_ORDER_FINISHED),
+            exchange = @Exchange(RabbitMQConfig.EXCHANGE),
+            key = RabbitMQConfig.ROUTING_KEY_FINISHED))
+    public void consumeFinishedMessage(final Message message, final OrderNotificationEvent event) {
+
+        log.info("Consume Finished");
         log.info("Prioridade {}" , message.getMessageProperties().getPriority());
         log.info("Evento: {}", event);
     }

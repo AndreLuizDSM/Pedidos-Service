@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderRabbitMQPublisherTest {
@@ -49,6 +49,10 @@ public class OrderRabbitMQPublisherTest {
 
         rabbitMQPublisher.notifyOrderCreated(eventDto);
 
+        verify(rabbitTemplate).convertAndSend(RabbitMQConfig.EXCHANGE,
+                RabbitMQConfig.ROUTING_KEY_CREATED, eventDto);
+        verifyNoMoreInteractions(rabbitTemplate);
+
 
     }
 
@@ -59,6 +63,10 @@ public class OrderRabbitMQPublisherTest {
                 RabbitMQConfig.ROUTING_KEY_FINISHED, eventDto);
 
         rabbitMQPublisher.notifyOrderFinished(eventDto);
+
+        verify(rabbitTemplate).convertAndSend(RabbitMQConfig.EXCHANGE,
+                RabbitMQConfig.ROUTING_KEY_FINISHED, eventDto);
+        verifyNoMoreInteractions(rabbitTemplate);
 
 
     }
