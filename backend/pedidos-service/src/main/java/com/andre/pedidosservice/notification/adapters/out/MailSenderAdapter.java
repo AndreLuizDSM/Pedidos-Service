@@ -1,5 +1,6 @@
 package com.andre.pedidosservice.notification.adapters.out;
 
+import com.andre.pedidosservice.exception.exceptions.EmailException;
 import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
 import com.andre.pedidosservice.notification.dtos.OrderNotificationEvent;
 import com.andre.pedidosservice.notification.gateways.out.MailSenderServiceGateway;
@@ -35,7 +36,7 @@ public class MailSenderAdapter implements MailSenderServiceGateway {
     private String nomeRemetente;
 
     @Override
-    public void sendMailOrderCreated(OrderNotificationEvent event) throws Exception {
+    public void sendMailOrderCreated(OrderNotificationEvent event) {
         try {
 
             UserDomain user = userRepository.findById(event.getUserId()).orElseThrow(
@@ -61,7 +62,7 @@ public class MailSenderAdapter implements MailSenderServiceGateway {
             javaMailSender.send(mensagem);
 
         } catch ( UnsupportedEncodingException | jakarta.mail.MessagingException e){
-            throw new Exception("Erro ao enviar email ", e);
+            throw new EmailException("Erro ao enviar email ", e);
         }
     }
 }

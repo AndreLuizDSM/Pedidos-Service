@@ -1,5 +1,6 @@
 package com.andre.pedidosservice.notification.adapters.in;
 
+import com.andre.pedidosservice.notification.core.MailSenderService;
 import com.andre.pedidosservice.notification.dtos.OrderNotificationEvent;
 import com.andre.pedidosservice.order.core.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,9 @@ public class OrderRabbitMQConsumerTest {
 
     @Mock
     private Message message;
+
+    @Mock
+    private MailSenderService mailSenderService;
 
     private OrderNotificationEvent eventDto;
 
@@ -50,6 +54,18 @@ public class OrderRabbitMQConsumerTest {
         rabbitMQConsumer.consumeCreatedMessage(message, eventDto);
 
         verify(message, times(1)).getMessageProperties();
+        verify(mailSenderService, times(1)).sendOrderCreated(eventDto);
+    }
+
+    @Test
+    public void should_NotPropagateException_when_MailSenderFails(){
+
+        doThrow(new RuntimeException("Falha no SMTP")).when(mailSenderService).sendOrderCreated(eventDto);
+
+        // Não deve lançar: a falha no e-mail é só logada, não pode travar o listener
+        rabbitMQConsumer.consumeCreatedMessage(message, eventDto);
+
+        verify(mailSenderService, times(1)).sendOrderCreated(eventDto);
     }
 
     @Test

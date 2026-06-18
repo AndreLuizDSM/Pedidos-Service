@@ -40,7 +40,7 @@ public class MailSenderService {
     @Value("${envio.email.nomeRemetente}")
     private String nomeRemetente;
 
-    public void sendOrderCreated(OrderNotificationEvent eventDto) throws Exception {
+    public void sendOrderCreated(OrderNotificationEvent eventDto) {
 
             service.sendMailOrderCreated(eventDto);
     }

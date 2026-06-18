@@ -5,5 +5,5 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 public interface MailSenderServiceGateway {
 
-    void sendMailOrderCreated(OrderNotificationEvent event) throws Exception;
+    void sendMailOrderCreated(OrderNotificationEvent event);
 }
