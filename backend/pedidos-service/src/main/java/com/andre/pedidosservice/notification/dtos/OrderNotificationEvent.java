@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderNotificationEvent {
 
+    // Identificador único deste evento (gerado uma vez na publicação). Usado para detectar
+    // e ignorar mensagens duplicadas entregues pelo RabbitMQ (garantia at-least-once = idempotência)
+    private String eventId;
+
     // ID do pedido que gerou o evento
     private String orderId;
 

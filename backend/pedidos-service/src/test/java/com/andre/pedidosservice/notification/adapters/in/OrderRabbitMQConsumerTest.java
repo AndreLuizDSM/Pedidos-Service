@@ -2,6 +2,7 @@ package com.andre.pedidosservice.notification.adapters.in;
 
 import com.andre.pedidosservice.notification.core.MailSenderService;
 import com.andre.pedidosservice.notification.dtos.OrderNotificationEvent;
+import com.andre.pedidosservice.notification.gateways.out.NotificationDeduplicationGateway;
 import com.andre.pedidosservice.order.core.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.amqp.core.MessageProperties;
 
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +30,9 @@ public class OrderRabbitMQConsumerTest {
     @Mock
     private MailSenderService mailSenderService;
 
+    @Mock
+    private NotificationDeduplicationGateway deduplicationGateway;
+
     private OrderNotificationEvent eventDto;
 
     @BeforeEach
@@ -40,6 +45,7 @@ public class OrderRabbitMQConsumerTest {
         when(message.getMessageProperties()).thenReturn(messageProperties);
 
         eventDto = OrderNotificationEvent.builder()
+                .eventId("evt-1")
                 .orderId("123Order")
                 .userId("123User")
                 .status(OrderStatus.CONFIRMADO)
@@ -51,40 +57,72 @@ public class OrderRabbitMQConsumerTest {
     @Test
     public void should_ConsumeCreatedMessage(){
 
+        when(deduplicationGateway.alreadyProcessed("evt-1")).thenReturn(false);
+
         rabbitMQConsumer.consumeCreatedMessage(message, eventDto);
 
         verify(message, times(1)).getMessageProperties();
         verify(mailSenderService, times(1)).sendOrderCreated(eventDto);
+        verify(deduplicationGateway, times(1)).markAsProcessed("evt-1");
     }
 
     @Test
-    public void should_NotPropagateException_when_MailSenderFails(){
+    public void should_SkipCreatedMessage_when_AlreadyProcessed(){
 
-        doThrow(new RuntimeException("Falha no SMTP")).when(mailSenderService).sendOrderCreated(eventDto);
+        when(deduplicationGateway.alreadyProcessed("evt-1")).thenReturn(true);
 
-        // Não deve lançar: a falha no e-mail é só logada, não pode travar o listener
         rabbitMQConsumer.consumeCreatedMessage(message, eventDto);
 
-        verify(mailSenderService, times(1)).sendOrderCreated(eventDto);
+        verify(mailSenderService, never()).sendOrderCreated(any());
+        verify(deduplicationGateway, never()).markAsProcessed(any());
+    }
+
+    @Test
+    public void should_PropagateException_when_MailSenderFails(){
+
+        when(deduplicationGateway.alreadyProcessed("evt-1")).thenReturn(false);
+        doThrow(new RuntimeException("Falha no SMTP")).when(mailSenderService).sendOrderCreated(eventDto);
+
+        // Deve propagar: é o retry com backoff do container RabbitMQ que trata essa falha,
+        // não o próprio listener
+        assertThrows(RuntimeException.class,
+                () -> rabbitMQConsumer.consumeCreatedMessage(message, eventDto));
+
+        verify(deduplicationGateway, never()).markAsProcessed(any());
     }
 
     @Test
     public void should_ConsumeFinishedMessage(){
 
+        when(deduplicationGateway.alreadyProcessed("evt-1")).thenReturn(false);
+
         rabbitMQConsumer.consumeFinishedMessage(message, eventDto);
 
         verify(message, times(1)).getMessageProperties();
         verify(mailSenderService, times(1)).sendOrderFinished(eventDto);
+        verify(deduplicationGateway, times(1)).markAsProcessed("evt-1");
     }
 
     @Test
-    public void should_NotPropagateException_when_MailSenderFails_OnFinished(){
+    public void should_SkipFinishedMessage_when_AlreadyProcessed(){
 
-        doThrow(new RuntimeException("Falha no SMTP")).when(mailSenderService).sendOrderFinished(eventDto);
+        when(deduplicationGateway.alreadyProcessed("evt-1")).thenReturn(true);
 
-        // Não deve lançar: a falha no e-mail é só logada, não pode travar o listener
         rabbitMQConsumer.consumeFinishedMessage(message, eventDto);
 
-        verify(mailSenderService, times(1)).sendOrderFinished(eventDto);
+        verify(mailSenderService, never()).sendOrderFinished(any());
+        verify(deduplicationGateway, never()).markAsProcessed(any());
+    }
+
+    @Test
+    public void should_PropagateException_when_MailSenderFails_OnFinished(){
+
+        when(deduplicationGateway.alreadyProcessed("evt-1")).thenReturn(false);
+        doThrow(new RuntimeException("Falha no SMTP")).when(mailSenderService).sendOrderFinished(eventDto);
+
+        assertThrows(RuntimeException.class,
+                () -> rabbitMQConsumer.consumeFinishedMessage(message, eventDto));
+
+        verify(deduplicationGateway, never()).markAsProcessed(any());
     }
 }

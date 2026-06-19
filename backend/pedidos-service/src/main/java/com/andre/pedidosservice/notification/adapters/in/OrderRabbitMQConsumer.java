@@ -3,6 +3,7 @@ package com.andre.pedidosservice.notification.adapters.in;
 import com.andre.pedidosservice.notification.adapters.config.RabbitMQConfig;
 import com.andre.pedidosservice.notification.core.MailSenderService;
 import com.andre.pedidosservice.notification.dtos.OrderNotificationEvent;
+import com.andre.pedidosservice.notification.gateways.out.NotificationDeduplicationGateway;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class OrderRabbitMQConsumer {
 
     private final MailSenderService mailSenderService;
+    private final NotificationDeduplicationGateway deduplicationGateway;
 
     @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConfig.QUEUE_ORDER_CREATED),
     exchange = @Exchange(RabbitMQConfig.EXCHANGE),
@@ -29,15 +31,19 @@ public class OrderRabbitMQConsumer {
         log.info("Prioridade {}" , message.getMessageProperties().getPriority());
         log.info("Evento: {}", event);
 
-        // Captura aqui em vez de deixar propagar: sem isso, uma falha no envio do e-mail
-        // (SMTP fora do ar, usuário não encontrado, etc.) faria o Spring AMQP rejeitar a
-        // mensagem e o RabbitMQ reentregá-la indefinidamente — travando a fila por causa de
-        // um efeito colateral (notificação) que não é crítico para o processamento do pedido
-        try {
-            mailSenderService.sendOrderCreated(event);
-        } catch (RuntimeException e) {
-            log.error("Falha ao enviar e-mail de confirmação para o pedido {}", event.getOrderId(), e);
+        // Idempotência: o RabbitMQ garante "at-least-once" — a mesma mensagem pode ser
+        // reentregue (ex: consumer caiu antes do ack). Sem essa checagem, o usuário
+        // receberia o mesmo e-mail mais de uma vez.
+        if (deduplicationGateway.alreadyProcessed(event.getEventId())) {
+            log.warn("Evento {} já processado, ignorando duplicata", event.getEventId());
+            return;
         }
+
+        // Não captura a exceção aqui de propósito: o container do RabbitMQ está configurado
+        // (spring.rabbitmq.listener.simple.retry.*) para tentar de novo com backoff antes de
+        // desistir definitivamente da mensagem
+        mailSenderService.sendOrderCreated(event);
+        deduplicationGateway.markAsProcessed(event.getEventId());
     }
 
     @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConfig.QUEUE_ORDER_FINISHED),
@@ -49,10 +55,12 @@ public class OrderRabbitMQConsumer {
         log.info("Prioridade {}" , message.getMessageProperties().getPriority());
         log.info("Evento: {}", event);
 
-        try {
-            mailSenderService.sendOrderFinished(event);
-        } catch (RuntimeException e) {
-            log.error("Falha ao enviar e-mail de finalização para o pedido {}", event.getOrderId(), e);
+        if (deduplicationGateway.alreadyProcessed(event.getEventId())) {
+            log.warn("Evento {} já processado, ignorando duplicata", event.getEventId());
+            return;
         }
+
+        mailSenderService.sendOrderFinished(event);
+        deduplicationGateway.markAsProcessed(event.getEventId());
     }
 }

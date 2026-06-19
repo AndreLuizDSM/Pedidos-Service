@@ -17,6 +17,7 @@ import com.andre.pedidosservice.user.gateways.out.UserRepositoryGateway;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class OrderService implements OrderGatewayService {
 
@@ -147,6 +148,7 @@ public class OrderService implements OrderGatewayService {
     // evitando duplicar esse mapeamento em cada ponto que precisa notificar
     private OrderNotificationEvent buildEvent(OrderDomain order) {
         return OrderNotificationEvent.builder()
+                .eventId(UUID.randomUUID().toString())
                 .orderId(order.getId())
                 .userId(order.getUserId())
                 .status(order.getStatus())

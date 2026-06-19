@@ -6,6 +6,7 @@ import com.andre.pedidosservice.notification.dtos.OrderNotificationEvent;
 import com.andre.pedidosservice.notification.gateways.out.MailSenderServiceGateway;
 import com.andre.pedidosservice.user.adapters.out.UserRepositoryGatewayAdapter;
 import com.andre.pedidosservice.user.core.domain.UserDomain;
+import com.andre.pedidosservice.user.gateways.out.UserRepositoryGateway;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class MailSenderAdapter implements MailSenderServiceGateway {
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
-    private final UserRepositoryGatewayAdapter userRepository;
+    private final UserRepositoryGateway userRepository;
 
     @Value("${envio.email.remetente}")
     private String remetente;
