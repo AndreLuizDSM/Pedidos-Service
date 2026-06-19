@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedido confirmado!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+         }
+        .container {
+            width: 80%;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+         }
+        .header {
+            text-align: center;
+            color: #333;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .summary {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .summary td {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .footer {
+            text-align: center;
+            color: #555;
+        }
+        .important {
+            font-weight: bold;
+            color: #d9534f;
+         }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Pedido confirmado!</h1>
+    </div>
+    <div class="content">
+        <!-- nomeCliente: nome do cliente que fez o pedido. Era inexistente antes;
+             precisa ser adicionado ao context do MailSenderAdapter (ex: user.getName()) -->
+        <p>Olá, <span class="important" th:text="${nameClient}">Cliente</span>!</p>
+        <p>Recebemos o seu pedido e ele já está sendo processado. Veja o resumo abaixo:</p>
+
+        <table class="summary">
+            <tr>
+                <td><strong>Número do pedido:</strong></td>
+                <!-- orderId: identificador do pedido (event.getOrderId()). Novo, precisa ser
+                     adicionado ao context do MailSenderAdapter -->
+                <td th:text="${orderId}">000000</td>
+            </tr>
+            <tr>
+                <td><strong>Status:</strong></td>
+                <!-- status: status atual do pedido (event.getStatus()). Novo, precisa ser
+                     adicionado ao context do MailSenderAdapter -->
+                <td th:text="${status}">PENDENTE</td>
+            </tr>
+            <tr>
+                <td><strong>Valor total:</strong></td>
+                <!-- totalAmount: já existia, só passou a ser formatado como moeda -->
+                <td th:text="${'R$ ' + #numbers.formatDecimal(totalAmount, 1, 2)}">R$ 0,00</td>
+            </tr>
+            <tr>
+                <td><strong>Data do pedido:</strong></td>
+                <!-- dataEvento: renomeada de "dateNow" para refletir que é o momento em que o
+                     pedido foi criado (event.getOccurredAt()), e não o instante de envio do e-mail -->
+                <td th:text="${#temporals.format(dataEvento, 'dd/MM/yyyy HH:mm')}">01/01/2026 00:00</td>
+            </tr>
+        </table>
+
+        <p>Você receberá uma nova notificação quando o seu pedido for finalizado.</p>
+    </div>
+    <div class="footer">
+        <p>Obrigado por comprar com a gente!</p>
+    </div>
+</div>
+</body>
+</html>

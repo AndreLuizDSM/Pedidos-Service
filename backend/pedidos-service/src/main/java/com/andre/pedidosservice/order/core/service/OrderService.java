@@ -2,10 +2,12 @@ package com.andre.pedidosservice.order.core.service;
 
 import com.andre.pedidosservice.exception.exceptions.InvalidRequestException;
 import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
+import com.andre.pedidosservice.notification.dtos.OrderNotificationEvent;
 import com.andre.pedidosservice.order.core.OrderStatus;
 import com.andre.pedidosservice.order.core.domain.OrderDomain;
 import com.andre.pedidosservice.order.core.domain.OrderItemDomain;
 import com.andre.pedidosservice.order.gateways.in.OrderGatewayService;
+import com.andre.pedidosservice.order.gateways.out.OrderNotificationGateway;
 import com.andre.pedidosservice.order.gateways.out.OrderRepositoryGateway;
 import com.andre.pedidosservice.product.core.domain.ProductDomain;
 import com.andre.pedidosservice.product.gateways.out.ProductRepositoryGateway;
@@ -15,6 +17,7 @@ import com.andre.pedidosservice.user.gateways.out.UserRepositoryGateway;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class OrderService implements OrderGatewayService {
 
@@ -22,10 +25,16 @@ public class OrderService implements OrderGatewayService {
     private final OrderRepositoryGateway repository;
     private final ProductRepositoryGateway productRepository;
 
-    public OrderService(OrderRepositoryGateway repository, ProductRepositoryGateway productRepository, UserRepositoryGateway userRepository) {
+    // Porta de saída para notificação assíncrona (RabbitMQ na implementação atual).
+    // O OrderService depende só da interface, então não sabe nem precisa saber que existe um broker por trás.
+    private final OrderNotificationGateway notificationGateway;
+
+    public OrderService(OrderRepositoryGateway repository, ProductRepositoryGateway productRepository,
+                         UserRepositoryGateway userRepository, OrderNotificationGateway notificationGateway) {
         this.repository = repository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.notificationGateway = notificationGateway;
     }
 
     @Override
@@ -35,7 +44,13 @@ public class OrderService implements OrderGatewayService {
 
         OrderDomain domain = OrderDomain.newOrder();
         domain.setUserId(userId);
-        return repository.save(domain, user);
+        OrderDomain savedOrder = repository.save(domain, user);
+
+        // Publica o evento de criação depois que o pedido já está persistido,
+        // assim só notificamos algo que de fato existe no banco
+        notificationGateway.notifyOrderCreated(buildEvent(savedOrder));
+
+        return savedOrder;
     }
 
     @Override
@@ -77,7 +92,15 @@ public class OrderService implements OrderGatewayService {
     @Override
     public OrderDomain updateOrderStatus(String id, OrderStatus status) {
         getOrderById(id);
-        return repository.updateStatus(id, status);
+        OrderDomain updatedOrder = repository.updateStatus(id, status);
+
+        // Só avisamos o resto do sistema quando o pedido realmente chega ao status final.
+        // Mudanças intermediárias (ex: PENDENTE -> CONFIRMADO) não disparam o evento de "finished"
+        if (updatedOrder.getStatus() == OrderStatus.ENTREGUE) {
+            notificationGateway.notifyOrderFinished(buildEvent(updatedOrder));
+        }
+
+        return updatedOrder;
     }
 
     @Override
@@ -119,5 +142,18 @@ public class OrderService implements OrderGatewayService {
     @Override
     public List<OrderDomain> getOrdersByUserId(String userId) {
         return repository.findByUserId(userId);
+    }
+
+    // Centraliza a montagem do evento de notificação a partir do domínio,
+    // evitando duplicar esse mapeamento em cada ponto que precisa notificar
+    private OrderNotificationEvent buildEvent(OrderDomain order) {
+        return OrderNotificationEvent.builder()
+                .eventId(UUID.randomUUID().toString())
+                .orderId(order.getId())
+                .userId(order.getUserId())
+                .status(order.getStatus())
+                .totalAmount(order.getTotalAmount())
+                .occurredAt(LocalDateTime.now())
+                .build();
     }
 }

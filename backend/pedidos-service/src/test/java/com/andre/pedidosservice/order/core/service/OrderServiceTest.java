@@ -5,6 +5,7 @@ import com.andre.pedidosservice.exception.exceptions.ResourceNotFoundException;
 import com.andre.pedidosservice.order.core.OrderStatus;
 import com.andre.pedidosservice.order.core.domain.OrderDomain;
 import com.andre.pedidosservice.order.core.domain.OrderItemDomain;
+import com.andre.pedidosservice.order.gateways.out.OrderNotificationGateway;
 import com.andre.pedidosservice.order.gateways.out.OrderRepositoryGateway;
 import com.andre.pedidosservice.product.core.domain.ProductDomain;
 import com.andre.pedidosservice.product.gateways.out.ProductRepositoryGateway;
@@ -45,6 +46,8 @@ class OrderServiceTest {
     private ProductRepositoryGateway productRepository;
     @Mock
     private UserRepositoryGateway userRepository;
+    @Mock
+    private OrderNotificationGateway notificationGateway;
 
     private UserDomain userDomain;
     private OrderDomain orderDomain;
@@ -74,7 +77,10 @@ class OrderServiceTest {
 
         verify(userRepository).findById("user-1");
         verify(repository).save(any(OrderDomain.class), any(UserDomain.class));
-        verifyNoMoreInteractions(userRepository, repository);
+
+        // Toda criação de pedido deve publicar o evento de notificação
+        verify(notificationGateway).notifyOrderCreated(any());
+        verifyNoMoreInteractions(userRepository, repository, notificationGateway);
     }
 
     @Test
@@ -185,7 +191,26 @@ class OrderServiceTest {
 
         verify(repository).findById("order-1");
         verify(repository).updateStatus("order-1", OrderStatus.CONFIRMADO);
-        verifyNoMoreInteractions(repository);
+
+        // Status diferente de ENTREGUE não deve disparar o evento de finalização
+        verifyNoMoreInteractions(repository, notificationGateway);
+    }
+
+    // testa o notifyOrderFinished quando orderDomain.status é ENTREGUE
+    @Test
+    void should_NotifyOrderFinished_when_StatusIsEntregue() {
+        orderDomain.setStatus(OrderStatus.ENTREGUE);
+        when(repository.findById("order-1")).thenReturn(Optional.of(orderDomain));
+        when(repository.updateStatus("order-1", OrderStatus.ENTREGUE)).thenReturn(orderDomain);
+
+        OrderDomain result = orderService.updateOrderStatus("order-1", OrderStatus.ENTREGUE);
+
+        assertNotNull(result);
+
+        verify(repository).findById("order-1");
+        verify(repository).updateStatus("order-1", OrderStatus.ENTREGUE);
+        verify(notificationGateway).notifyOrderFinished(any());
+        verifyNoMoreInteractions(repository, notificationGateway);
     }
 
                         // deleteOrder
