@@ -60,16 +60,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    // Falha ao montar/enviar o e-mail (causas comuns: UnsupportedEncodingException no
-    // remetente/destinatário mal formatado, ou MessagingException na comunicação com o SMTP)
-    @ExceptionHandler(EmailException.class)
-    public ResponseEntity<ErrorResponseDTO> handleEmailException(EmailException ex,
-                                                                  HttpServletRequest http){
-        log.error("Falha ao enviar e-mail na requisição {}", http.getRequestURI(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(
-                buildError(ex.getMessage(), HttpStatus.BAD_GATEWAY.value(), http.getRequestURI(), "Bad Gateway"));
-    }
-
     // Exception caso usuário tente passar credênciais inválidas com o que foi definido no DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleValidationException(

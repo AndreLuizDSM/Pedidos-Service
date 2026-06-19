@@ -44,7 +44,7 @@ public class OrderController {
         return ResponseEntity.ok(mapper.domainToResponse(service.deleteOrderItem(idOrder, idOrderItem)));
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> updateOrderStatus(@PathVariable String id,
                                                               @RequestParam OrderStatus status) {
         return ResponseEntity.ok(mapper.domainToResponse(service.updateOrderStatus(id, status)));

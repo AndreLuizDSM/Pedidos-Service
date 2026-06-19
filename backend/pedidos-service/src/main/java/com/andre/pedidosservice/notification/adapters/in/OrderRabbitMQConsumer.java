@@ -8,9 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +19,10 @@ public class OrderRabbitMQConsumer {
     private final MailSenderService mailSenderService;
     private final NotificationDeduplicationGateway deduplicationGateway;
 
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConfig.QUEUE_ORDER_CREATED),
-    exchange = @Exchange(RabbitMQConfig.EXCHANGE),
-    key = RabbitMQConfig.ROUTING_KEY_CREATED))
+    // A fila, a exchange e o binding já são declarados como beans em RabbitMQConfig (com os
+    // argumentos de dead-letter). Declará-los de novo aqui via @QueueBinding criaria uma segunda
+    // definição da mesma fila sem esses argumentos, conflitando com a declaração do RabbitMQConfig.
+    @RabbitListener(queues = RabbitMQConfig.QUEUE_ORDER_CREATED)
     public void consumeCreatedMessage(final Message message, final OrderNotificationEvent event) {
 
         log.info("Consume Created");
@@ -46,9 +44,7 @@ public class OrderRabbitMQConsumer {
         deduplicationGateway.markAsProcessed(event.getEventId());
     }
 
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(RabbitMQConfig.QUEUE_ORDER_FINISHED),
-            exchange = @Exchange(RabbitMQConfig.EXCHANGE),
-            key = RabbitMQConfig.ROUTING_KEY_FINISHED))
+    @RabbitListener(queues = RabbitMQConfig.QUEUE_ORDER_FINISHED)
     public void consumeFinishedMessage(final Message message, final OrderNotificationEvent event) {
 
         log.info("Consume Finished");
