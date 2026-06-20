@@ -155,7 +155,7 @@ public class OrderControllerTest {
         when(mapper.domainToResponse(orderDomain)).thenReturn(orderResponseDTO);
 
         // status é passado por parametros
-        mockMvc.perform(patch(url + "/{id}/status", id)
+        mockMvc.perform(patch(url + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .param("status", "CONFIRMADO")
