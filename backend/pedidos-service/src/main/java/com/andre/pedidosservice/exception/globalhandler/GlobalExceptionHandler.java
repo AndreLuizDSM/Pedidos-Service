@@ -1,5 +1,6 @@
 package com.andre.pedidosservice.exception.globalhandler;
 
+import com.andre.pedidosservice.exception.exceptions.EmailException;
 import com.andre.pedidosservice.exception.exceptions.ErrorResponseDTO;
 import com.andre.pedidosservice.exception.exceptions.ExternalServiceException;
 import com.andre.pedidosservice.exception.exceptions.InvalidRequestException;
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handlerResourceNotFound(ResourceNotFoundException ex,
                                                                     HttpServletRequest http){
-
+        log.error("Recurso não encontrado na requisição {}", http.getRequestURI(), ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     buildError(ex.getMessage() , HttpStatus.NOT_FOUND.value(), http.getRequestURI() , "Not Found")
             );
@@ -35,6 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponseDTO> handlerUnauthorizedException(UnauthorizedException ex,
                                                                          HttpServletRequest http){
+        log.error("Acesso não autorizado na requisição {}", http.getRequestURI(), ex);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 buildError(ex.getMessage(), HttpStatus.UNAUTHORIZED.value(), http.getRequestURI(), "Unauthorized"));
     }
@@ -43,6 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ErrorResponseDTO> handleInvalidRequest(InvalidRequestException ex,
                                                                  HttpServletRequest http){
+        log.error("Requisição inválida na requisição {}", http.getRequestURI(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 buildError(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), http.getRequestURI(), "Bad Request"));
     }
@@ -69,6 +72,7 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
+        log.error("Falha de validação na requisição {}: {}", request.getRequestURI(), message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(buildError(
@@ -83,6 +87,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleNoResourceFound(NoResourceFoundException ex,
                                                                   HttpServletRequest request) {
+        log.error("Rota inexistente {}", request.getRequestURI(), ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 buildError("Recurso não encontrado", HttpStatus.NOT_FOUND.value(),
                         request.getRequestURI(), "Not Found"));
