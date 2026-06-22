@@ -8,8 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-// Adapter de saída: implementa o contrato definido em OrderNotificationGateway usando RabbitMQ como infraestrutura
-// O OrderService não conhece esta classe — ele depende apenas da interface (OrderNotificationGateway)
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,7 +29,6 @@ public class OrderRabbitMQPublisher implements OrderNotificationGateway {
                 event
         );
     }
-
     @Override
     public void notifyOrderFinished(OrderNotificationEvent event) {
         // Mesmo fluxo, mas com a routing key de finalização
