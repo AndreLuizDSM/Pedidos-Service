@@ -5,8 +5,10 @@ import com.andre.pedidosservice.order.dtos.OrderItemRequestDTO;
 import com.andre.pedidosservice.order.dtos.OrderMapper;
 import com.andre.pedidosservice.order.dtos.OrderResponseDTO;
 import com.andre.pedidosservice.order.gateways.in.OrderGatewayService;
+import com.andre.pedidosservice.security.SecurityConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/order")
 @RequiredArgsConstructor
 @Tag(name = "Orders")
+@SecurityRequirement(name = SecurityConfig.SECURITY_SCHEME)
 public class OrderController {
 
     private final OrderGatewayService service;

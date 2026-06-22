@@ -5,8 +5,10 @@ import com.andre.pedidosservice.product.dtos.ProductMapper;
 import com.andre.pedidosservice.product.dtos.ProductRequestDTO;
 import com.andre.pedidosservice.product.dtos.ProductResponseDTO;
 import com.andre.pedidosservice.product.gateways.in.ProductServiceGateway;
+import com.andre.pedidosservice.security.SecurityConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/product")
 @RequiredArgsConstructor
 @Tag(name = "Products")
+@SecurityRequirement(name = SecurityConfig.SECURITY_SCHEME)
 public class ProductController {
 
     private final ProductServiceGateway service;

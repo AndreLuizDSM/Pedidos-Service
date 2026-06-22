@@ -3,6 +3,8 @@ package com.andre.pedidosservice.security;
 import com.andre.pedidosservice.exception.exceptions.ErrorResponseDTO;
 import com.andre.pedidosservice.user.core.UserStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,8 @@ import java.time.LocalDateTime;
 // Configura quais rotas precisam de autenticação , e faz o filtro chain
 @Configuration
 @EnableWebSecurity
+@SecurityScheme(name = SecurityConfig.SECURITY_SCHEME, type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT", scheme = "Bearer")
 public class SecurityConfig {
 
     // Instâncias de JwtUtil e UserDetailsService injetadas pelo Spring
@@ -34,6 +38,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
 
     private final String authorities = "ADMIN";
+    public static final String SECURITY_SCHEME = "bearerAuth";
 
 
     // Construtor para injeção de dependências de JwtUtil e UserDetailsService

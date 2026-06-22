@@ -1,5 +1,6 @@
 package com.andre.pedidosservice.user.adapters.in;
 
+import com.andre.pedidosservice.security.SecurityConfig;
 import com.andre.pedidosservice.user.core.domain.UserDomain;
 import com.andre.pedidosservice.user.dtos.UserLoginDTO;
 import com.andre.pedidosservice.user.dtos.UserMapper;
@@ -10,6 +11,8 @@ import com.andre.pedidosservice.user.gateways.in.UserAuthenticationService;
 import com.andre.pedidosservice.user.gateways.in.UserServiceGateway;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @Tag(name = "Users")
+@SecurityRequirement(name = SecurityConfig.SECURITY_SCHEME)
 public class UserController {
 
     private final UserServiceGateway serviceGateway;
