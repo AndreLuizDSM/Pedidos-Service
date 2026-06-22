@@ -5,6 +5,7 @@ import com.andre.pedidosservice.order.dtos.OrderItemRequestDTO;
 import com.andre.pedidosservice.order.dtos.OrderMapper;
 import com.andre.pedidosservice.order.dtos.OrderResponseDTO;
 import com.andre.pedidosservice.order.gateways.in.OrderGatewayService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/order")
 @RequiredArgsConstructor
+@Tag(name = "Orders", description = "Order management")
 public class OrderController {
 
     private final OrderGatewayService service;

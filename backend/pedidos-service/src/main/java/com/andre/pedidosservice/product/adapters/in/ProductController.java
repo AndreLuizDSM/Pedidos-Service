@@ -5,6 +5,7 @@ import com.andre.pedidosservice.product.dtos.ProductMapper;
 import com.andre.pedidosservice.product.dtos.ProductRequestDTO;
 import com.andre.pedidosservice.product.dtos.ProductResponseDTO;
 import com.andre.pedidosservice.product.gateways.in.ProductServiceGateway;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/product")
 @RequiredArgsConstructor
+@Tag(name = "Products", description = "Product management")
 public class ProductController {
 
     private final ProductServiceGateway service;

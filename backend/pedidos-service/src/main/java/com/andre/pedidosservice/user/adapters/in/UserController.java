@@ -8,6 +8,7 @@ import com.andre.pedidosservice.user.dtos.UserResponseDTO;
 import com.andre.pedidosservice.user.core.UserStatus;
 import com.andre.pedidosservice.user.gateways.in.UserAuthenticationService;
 import com.andre.pedidosservice.user.gateways.in.UserServiceGateway;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@Tag(name = "Users", description = "User registration and login")
 public class UserController {
 
     private final UserServiceGateway serviceGateway;
