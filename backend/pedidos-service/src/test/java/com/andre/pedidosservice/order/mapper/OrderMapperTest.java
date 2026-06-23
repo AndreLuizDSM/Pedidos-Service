@@ -88,9 +88,9 @@ public class OrderMapperTest {
         itemResponseFixture =
                 OrderItemResponseDTOFixture.build("i1", "p1", "Teclado", 150.0, 2, 300.0);
 
-        // domainToResponse: items fica null (o mapper não mapeia orderItems → items)
+
         orderResponseFixture = OrderResponseDTOFixture.build("o1", now, now, now,
-                300.0, OrderStatus.PENDENTE, "u1", null);
+                300.0, OrderStatus.PENDENTE, "u1", List.of(itemResponseFixture));
 
         // User no OrderEntity não é mapeado pelo mapstruct , o user é injetado manualmente no método da service
         // product fica null: o mapper só tem productId (String), não consegue reconstruir a ProductEntity completo
