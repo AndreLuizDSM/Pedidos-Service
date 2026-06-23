@@ -50,19 +50,18 @@ public class OrderItemEntity {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof OrderItemEntity that)) return false;
-        return Double.compare(productPrice, that.productPrice) == 0 && Objects.equals(id, that.id) && Objects.equals(order, that.order) && Objects.equals(product, that.product) && Objects.equals(productName, that.productName) && Objects.equals(quantity, that.quantity);
+        return Double.compare(productPrice, that.productPrice) == 0 && Objects.equals(id, that.id) && Objects.equals(product, that.product) && Objects.equals(productName, that.productName) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, order, product, productName, productPrice, quantity);
+        return Objects.hash(id, product, productName, productPrice, quantity);
     }
 
     @Override
     public String toString() {
         return "OrderItemEntity{" +
                 "id='" + id + '\'' +
-                ", order=" + order +
                 ", product=" + product +
                 ", productName='" + productName + '\'' +
                 ", productPrice=" + productPrice +

@@ -87,6 +87,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
 
             product.setStock(product.getStock() - itemDomain.getQuantity());
             productJpaRepository.save(product);
+
         }
 
         orderEntity.setExpiresAt(LocalDateTime.now().plusHours(6));
