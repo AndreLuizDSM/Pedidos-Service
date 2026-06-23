@@ -7,6 +7,7 @@ import com.andre.pedidosservice.user.entities.UserEntity;
 import com.andre.pedidosservice.user.gateways.out.UserAuthenticationGateway;
 import com.andre.pedidosservice.user.ports.out.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 
 // Adapter separado para realizar apenas a authenticação do usuário
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserAuthenticationAdapter implements UserAuthenticationGateway {
@@ -40,7 +41,11 @@ public class UserAuthenticationAdapter implements UserAuthenticationGateway {
                     new UsernamePasswordAuthenticationToken(entity.getId(), domain.getPassword())
             );
 
-            return "Bearer " + jwtUtil.generateToken(authentication.getName(), entity.getStatus());
+            // TODO APENAS PARA PEGAR O ID DO USUÁRIO
+            String token = "Bearer " + jwtUtil.generateToken(authentication.getName(), entity.getStatus());
+            System.out.println(jwtUtil.extrairSubjectUUIDToken(token.substring(7)));
+
+            return token;
 
         } catch (BadCredentialsException | UsernameNotFoundException e) {
             throw new UnauthorizedException("Credenciais invalidas");

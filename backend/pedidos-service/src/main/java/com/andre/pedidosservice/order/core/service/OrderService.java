@@ -36,7 +36,6 @@ public class OrderService implements OrderGatewayService {
         this.userRepository = userRepository;
         this.notificationGateway = notificationGateway;
     }
-
     @Override
     public OrderDomain createOrder(String userId) {
         UserDomain user = userRepository.findById(userId).orElseThrow(
@@ -46,8 +45,7 @@ public class OrderService implements OrderGatewayService {
         domain.setUserId(userId);
         OrderDomain savedOrder = repository.save(domain, user);
 
-        // Publica o evento de criação depois que o pedido já está persistido,
-        // assim só notificamos algo que de fato existe no banco
+        // Grava o evento de criação na mesma transação do pedido (ver comentário acima)
         notificationGateway.notifyOrderCreated(buildEvent(savedOrder));
 
         return savedOrder;

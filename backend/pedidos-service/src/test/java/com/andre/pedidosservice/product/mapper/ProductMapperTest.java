@@ -49,7 +49,7 @@ public class ProductMapperTest {
     void should_ReturnDomain_when_ConvertFromRequest(){
         ProductDomain domain = mapper.requestToDomain(productRequest);
 
-        // request não traz id, então uso o construtor sem id (id fica null nos dois lados)
+
         assertEquals(productDomain.getName(), domain.getName());
         assertEquals(productDomain.getStock(), domain.getStock());
         assertEquals(productDomain.getPrice(), domain.getPrice());
@@ -64,6 +64,6 @@ public class ProductMapperTest {
         assertEquals(productDomain.getName(), domain.getName());
         assertEquals(productDomain.getStock(), domain.getStock());
         assertEquals(productDomain.getPrice(), domain.getPrice());
-        assertNull(domain.getId());
+        assertEquals(productDomain.getId() ,domain.getId());
     }
 }
