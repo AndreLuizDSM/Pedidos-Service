@@ -14,5 +14,5 @@ public record OrderResponseDTO(
         double totalAmount,
         OrderStatus status,
         String userId,
-        List<OrderItemResponseDTO> items
+        List<OrderItemResponseDTO> orderItems
 ) {}
