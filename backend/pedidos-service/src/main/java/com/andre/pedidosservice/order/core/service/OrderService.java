@@ -14,7 +14,9 @@ import com.andre.pedidosservice.product.gateways.out.ProductRepositoryGateway;
 import com.andre.pedidosservice.user.core.domain.UserDomain;
 import com.andre.pedidosservice.user.gateways.out.UserRepositoryGateway;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -81,7 +83,7 @@ public class OrderService implements OrderGatewayService {
 
             additionalTotal += product.getPrice() * item.getQuantity();
         }
-        order.setExpiresAt(LocalDateTime.now().plusHours(6));
+        order.setExpiresAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(6));
         double newTotal = order.getTotalAmount() + additionalTotal;
 
         return repository.saveItems(order, preparedItems, newTotal);
@@ -131,7 +133,7 @@ public class OrderService implements OrderGatewayService {
         double newTotal = order.getTotalAmount() - (item.getProductPrice() * item.getQuantity());
         repository.deleteItemById(orderId, orderItemId, newTotal);
 
-        order.setExpiresAt(LocalDateTime.now().plusHours(6));
+        order.setExpiresAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(6));
         order.setTotalAmount(newTotal);
         order.getOrderItems().removeIf(i -> i.getId().equals(item.getId()));
         return order;
@@ -151,7 +153,7 @@ public class OrderService implements OrderGatewayService {
                 .userId(order.getUserId())
                 .status(order.getStatus())
                 .totalAmount(order.getTotalAmount())
-                .occurredAt(LocalDateTime.now())
+                .occurredAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")))
                 .build();
     }
 }
