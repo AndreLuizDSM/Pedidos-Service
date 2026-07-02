@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 
 // Configura quais rotas precisam de autenticação , e faz o filtro chain
@@ -106,7 +107,7 @@ public class SecurityConfig {
     private void buildError(HttpServletRequest request, HttpServletResponse response,
                             HttpStatus status, String erro) throws IOException {
         ErrorResponseDTO body = ErrorResponseDTO.builder()
-                .timeStamp(LocalDateTime.now())
+                .timeStamp(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")))
                 .status(status.value())
                 .message(erro)
                 .path(request.getRequestURI())

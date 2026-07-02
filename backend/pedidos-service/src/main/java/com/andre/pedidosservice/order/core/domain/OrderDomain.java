@@ -3,6 +3,7 @@ package com.andre.pedidosservice.order.core.domain;
 import com.andre.pedidosservice.order.core.OrderStatus;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,10 +43,10 @@ public class OrderDomain {
     public static OrderDomain newOrder(){
         OrderDomain domain = new OrderDomain();
         domain.setStatus(OrderStatus.PENDENTE);
-        domain.setCreatedAt(LocalDateTime.now());
-        domain.setUpdatedAt(LocalDateTime.now());
+        domain.setCreatedAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
+        domain.setUpdatedAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
         domain.setTotalAmount(0);
-        domain.setExpiresAt(LocalDateTime.now().plusHours(6));
+        domain.setExpiresAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(6));
         return domain;
     }
 
