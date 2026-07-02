@@ -14,7 +14,6 @@ import com.andre.pedidosservice.product.gateways.out.ProductRepositoryGateway;
 import com.andre.pedidosservice.user.core.domain.UserDomain;
 import com.andre.pedidosservice.user.gateways.out.UserRepositoryGateway;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
