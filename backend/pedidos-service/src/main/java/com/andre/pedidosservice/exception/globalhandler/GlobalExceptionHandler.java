@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -108,7 +109,7 @@ public class GlobalExceptionHandler {
     private ErrorResponseDTO buildError (String message, int status, String path, String erro) {
         // Criar um erroDTO para passar detalhadamente o erro com o Token JWT
         return  ErrorResponseDTO.builder()
-                .timeStamp(LocalDateTime.now())
+                .timeStamp(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")))
                 .status(status)
                 .message(message)
                 .path(path)

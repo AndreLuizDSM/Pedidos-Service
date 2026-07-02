@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 // Intercepta cada request feito lendo o token passado pelo HEADER e faz a autenticação
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -85,7 +86,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private String buildError (String message, int status, String path, String erro) throws JsonProcessingException {
         // Criar um erroDTO para passar detalhadamente o erro com o Token JWT
         ErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
-                .timeStamp(LocalDateTime.now())
+                .timeStamp(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")))
                 .status(status)
                 .message(message)
                 .path(path)

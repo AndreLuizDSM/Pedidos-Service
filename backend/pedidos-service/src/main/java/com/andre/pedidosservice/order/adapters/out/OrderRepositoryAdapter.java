@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,7 +63,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
         OrderEntity entity = orderJpaRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException(orderNotFound));
         entity.setStatus(status);
-        entity.setUpdatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
         return mapper.entityToDomain(orderJpaRepository.save(entity));
     }
 
@@ -90,9 +91,9 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
 
         }
 
-        orderEntity.setExpiresAt(LocalDateTime.now().plusHours(6));
+        orderEntity.setExpiresAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(6));
         orderEntity.setTotalAmount(newTotal);
-        orderEntity.setUpdatedAt(LocalDateTime.now());
+        orderEntity.setUpdatedAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
 
         return mapper.entityToDomain(orderJpaRepository.save(orderEntity));
     }
@@ -124,9 +125,9 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
 
         // Atualiza a persistencia
         order.setTotalAmount(newTotal);
-        order.setUpdatedAt(LocalDateTime.now());
+        order.setUpdatedAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
         order.getOrderItems().remove(item);
-        order.setExpiresAt(LocalDateTime.now().plusHours(6));
+        order.setExpiresAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(6));
         orderJpaRepository.save(order);
 
         ProductEntity product = item.getProduct();
@@ -147,7 +148,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryGateway {
     @Override
     public List<OrderDomain> findExpiredOrders() {
         // Retorna os itens Pendentes que já passaram do prazo de validade
-        return orderJpaRepository.findByStatusAndExpiresAtBefore(OrderStatus.PENDENTE, LocalDateTime.now())
+        return orderJpaRepository.findByStatusAndExpiresAtBefore(OrderStatus.PENDENTE, LocalDateTime.now(ZoneId.of("America/Sao_Paulo")))
                 .stream()
                 .map(mapper::entityToDomain)
                 .toList();

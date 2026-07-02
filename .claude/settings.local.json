@@ -11,7 +11,8 @@
       "Bash(grep -iA1 -E \"mockito|junit|spring-boot-starter-test\")",
       "Bash(./gradlew test *)",
       "PowerShell(.\\\\gradlew.bat test --tests \"com.andre.pedidosservice.user.adapters.in.UserControllerTest\" --tests \"com.andre.pedidosservice.user.adapters.out.UserRepositoryAdapterTest\" --tests \"com.andre.pedidosservice.user.core.service.UserAuthenticationTest\" --console=plain)",
-      "PowerShell(.\\\\gradlew.bat test --tests \"com.andre.pedidosservice.user.adapters.in.UserControllerTest\" --console=plain)"
+      "PowerShell(.\\\\gradlew.bat test --tests \"com.andre.pedidosservice.user.adapters.in.UserControllerTest\" --console=plain)",
+      "Bash(./gradlew :pedidos-service:test --console=plain -q)"
     ]
   }
 }
